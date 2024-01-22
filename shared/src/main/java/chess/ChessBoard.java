@@ -35,9 +35,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        // Finds the piece on the position of the board
-        ChessPiece piece_request = chess_board.get(position);
-        return piece_request;
+        return chess_board.get(position);
     }
 
     /**
