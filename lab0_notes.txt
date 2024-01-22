@@ -1,0 +1,5 @@
+Just a FYI, I had problems setting up my Github repository and downloading the
+.zip file so that IntelliJ could run properly. I downloaded the .zip multiple
+times and finally got it to work. I then copied what I was working on before
+into the working files and pushed it all. So that's why all the files are there
+from one push.
