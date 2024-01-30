@@ -252,7 +252,7 @@ public class ChessPiece {
                 new_col = my_col + 1;
                 new_row = my_row + 1;
 
-                if (!(new_col > 8) || !(new_row > 8)) {
+                if (!(new_col > 8) && !(new_row > 8)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 
@@ -284,7 +284,7 @@ public class ChessPiece {
                 new_col = my_col - 1;
                 new_row = my_row + 1;
 
-                if (!(new_col < 1) || !(new_row > 8)) {
+                if ((new_col >= 1) || !(new_row <= 8)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 //                    System.out.println(new_row + ", " + new_col);
@@ -349,7 +349,7 @@ public class ChessPiece {
                 new_col = my_col + 1;
                 new_row = my_row - 1;
 
-                if (!(new_col > 8) || !(new_row < 1)) {
+                if (!(new_col > 8) && !(new_row < 1)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 
@@ -437,7 +437,7 @@ public class ChessPiece {
                 new_col = my_col + 1;
                 new_row = new_row + 1;
 
-                if ((new_col > 8) || (new_row > 8)) {
+                if ((new_col > 8) && (new_row > 8)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 
@@ -469,7 +469,7 @@ public class ChessPiece {
                 new_col = my_col - 1;
                 new_row = new_row + 1;
 
-                if ((new_col < 1) || (new_row > 8)) {
+                if ((new_col >= 1) && (new_row <= 8)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 
@@ -529,7 +529,7 @@ public class ChessPiece {
                 new_col = my_col + 1;
                 new_row = my_row - 1;
 
-                if ((new_col > 8) || (new_row < 1)) {
+                if ((new_col > 8) && (new_row < 1)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 
@@ -561,7 +561,7 @@ public class ChessPiece {
                 new_col = my_col - 1;
                 new_row = my_row - 1;
 
-                if ((new_col < 1) || (new_row < 1)) {
+                if ((new_col >= 1) && (new_row >= 1)) {
                     // Creates new position
                     new_position = new ChessPosition(new_row, new_col);
 
@@ -683,7 +683,7 @@ public class ChessPiece {
             // Move left once
             new_col = my_col;
             new_row = my_row - 1;
-            if (new_col < 1) {
+            if (new_row < 1) {
                 // Do nothing
             }
             else {
@@ -1467,5 +1467,13 @@ public class ChessPiece {
     @Override
     public int hashCode() {
         return Objects.hash(team_color, piece_type);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "team_color=" + team_color +
+                ", piece_type=" + piece_type +
+                '}';
     }
 }

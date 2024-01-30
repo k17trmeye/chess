@@ -9,8 +9,8 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessMove {
-    private ChessPosition start_pos = null;
-    private ChessPosition end_pos = null;
+    private ChessPosition start_pos;
+    private ChessPosition end_pos;
     private ChessPiece.PieceType promotion_Piece;
     public ChessMove(ChessPosition startPosition, ChessPosition endPosition,
                      ChessPiece.PieceType promotionPiece) {
@@ -52,5 +52,14 @@ public class ChessMove {
     @Override
     public int hashCode() {
         return Objects.hash(start_pos, end_pos, promotion_Piece);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessMove{" +
+                "start_pos=" + start_pos +
+                ", end_pos=" + end_pos +
+                ", promotion_Piece=" + promotion_Piece +
+                '}';
     }
 }

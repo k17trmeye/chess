@@ -25,6 +25,7 @@ public class ChessGameTests {
         game.setTeamTurn(ChessGame.TeamColor.WHITE);
 
         //king
+        System.out.println("King");
         var kingStartPosition = getNewPosition(1, 2);
         var kingEndPosition = getNewPosition(1, 1);
         game.makeMove(getNewMove(kingStartPosition, kingEndPosition, null));
@@ -41,6 +42,7 @@ public class ChessGameTests {
                 """));
 
         //queen
+        System.out.println("Queen");
         var queenStartPosition = getNewPosition(7, 8);
         var queenEndPosition = getNewPosition(8, 7);
         game.makeMove(getNewMove(queenStartPosition, queenEndPosition, null));
@@ -57,6 +59,7 @@ public class ChessGameTests {
                 """));
 
         //rook
+        System.out.println("Rook");
         var rookStartPosition = getNewPosition(1, 8);
         ChessPosition rookEndPosition = getNewPosition(3, 8);
         game.makeMove(getNewMove(rookStartPosition, rookEndPosition, null));
@@ -73,6 +76,7 @@ public class ChessGameTests {
                 """));
 
         //knight
+        System.out.println("Knight");
         var knightStartPosition = getNewPosition(6, 3);
         ChessPosition knightEndPosition = getNewPosition(7, 5);
         game.makeMove(getNewMove(knightStartPosition, knightEndPosition, null));
@@ -90,6 +94,7 @@ public class ChessGameTests {
 
 
         //bishop
+        System.out.println("Bishop");
         var bishopStartPosition = getNewPosition(2, 3);
         ChessPosition bishopEndPosition = getNewPosition(1, 2);
         game.makeMove(getNewMove(bishopStartPosition, bishopEndPosition, null));
@@ -106,6 +111,7 @@ public class ChessGameTests {
                 """));
 
         //pawn
+        System.out.println("Pawn");
         var pawnStartPosition = getNewPosition(6, 7);
         var pawnEndPosition = getNewPosition(5, 7);
         game.makeMove(getNewMove(pawnStartPosition, pawnEndPosition, null));
