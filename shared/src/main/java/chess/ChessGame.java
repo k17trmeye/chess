@@ -53,10 +53,72 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         // Get the piece at that position
         ChessPiece selected_piece = game_board.getPiece(startPosition);
+        Collection<ChessMove> all_moves;
+        Collection<ChessMove> valid_moves = new ArrayList<>();
+        ChessBoard temp_board = game_board;
+
+        char[][] printBoard;
+        ChessPiece enemyPiece = null;
+        boolean enemyHere = false;
 
         // If there is a piece, return the positions it can take given the board and the start position
         if (selected_piece != null) {
-            return selected_piece.pieceMoves(game_board, startPosition);
+            // Grab all moves
+            all_moves =  selected_piece.pieceMoves(game_board, startPosition);
+
+            // Iterate through all moves to check which ones don't leave the King in check
+            for (ChessMove each_move : all_moves) {
+                // Print the board
+//                printBoard = temp_board.getBoard();
+//                printCharArray(printBoard);
+
+                // Check if end position is on an enemy
+                if (game_board.getPiece(each_move.getEndPosition()) != null) {
+                    if (game_board.getPiece(each_move.getEndPosition()).getTeamColor() != selected_piece.getTeamColor()) {
+                        enemyPiece = game_board.getPiece(each_move.getEndPosition());
+                        enemyHere = true;
+                    }
+                }
+
+                // Add a move the piece to the new position on the board
+                temp_board.addPiece(each_move.getEndPosition(), new ChessPiece(selected_piece.getTeamColor(), selected_piece.getPieceType()));
+
+                // Add a null piece to the previous position
+                temp_board.addPiece(each_move.getStartPosition(), null);
+
+//                System.out.println("Is " + selected_piece.getTeamColor() + " in check after " + selected_piece.getTeamColor() + " " +
+//                        selected_piece.getPieceType() + " moves from " + each_move.getStartPosition() + " to " + each_move.getEndPosition());
+                // Make sure that move doesn't leave the king in check
+                if (isInCheck(selected_piece.getTeamColor())) {
+                    // Undo previous move
+                    // Add a move the piece to the new position on the board
+                    temp_board.addPiece(each_move.getEndPosition(), null);
+
+                    // Add a null piece to the previous position
+                    temp_board.addPiece(each_move.getStartPosition(), new ChessPiece(selected_piece.getTeamColor(), selected_piece.getPieceType()));
+                }
+                else {
+                    // Undo previous move
+                    // Add a move the piece to the new position on the board
+                    if (enemyHere) {
+                        temp_board.addPiece(each_move.getEndPosition(), enemyPiece);
+                        enemyHere = false;
+                    } else {
+                        temp_board.addPiece(each_move.getEndPosition(), null);
+                    }
+
+                    // Add a null piece to the previous position
+                    temp_board.addPiece(each_move.getStartPosition(), new ChessPiece(selected_piece.getTeamColor(), selected_piece.getPieceType()));
+
+                    // Add the valid move to the Collection
+//                    System.out.println("Valid Move Added: " + each_move.getStartPosition() + "; " + each_move.getEndPosition());
+//                    System.out.println();
+                    valid_moves.add(each_move);
+                }
+            }
+        }
+        if (!valid_moves.isEmpty()) {
+            return valid_moves;
         }
 
         // If there is no piece there, return null
@@ -171,13 +233,17 @@ public class ChessGame {
             for (int j = 1; j < 9; j++) {
                 // Gets a piece from the board
                 temp_piece = game_board.getPiece(new ChessPosition(i, j));
+
                 // If the piece is a King with the same color, assign it to king_piece
                 if (temp_piece != null) {
-                    if (temp_piece.getTeamColor() == teamColor) {
-                        if (temp_piece.getPieceType() == ChessPiece.PieceType.KING) {
-                            my_row = i;
-                            my_col = j;
-                            break;
+                    if ((temp_piece.getPieceType() != null) && (temp_piece.getTeamColor() != null)) {
+                        if (temp_piece.getTeamColor() == teamColor) {
+                            if (temp_piece.getPieceType() == ChessPiece.PieceType.KING) {
+                                my_row = i;
+                                my_col = j;
+//                                System.out.println("King Found: " + my_row + ", " + my_col);
+                                break;
+                            }
                         }
                     }
                 }
@@ -195,22 +261,35 @@ public class ChessGame {
             for (int j = 1; j < 9; j++) {
                 // Gets a piece from the board
                 temp_piece = game_board.getPiece(new ChessPosition(i, j));
-                // If the piece is a King with the same color, assign it to king_piece
+                // If there is a piece there
                 if (temp_piece != null) {
-                    if (teamColor != temp_piece.getTeamColor()) {
+//                    System.out.println("Checking piece " + temp_piece.getTeamColor() + " " + temp_piece.getPieceType() + ": " + i + ", " + j);
+                    // If the piece is an enemy
+                    if ((teamColor != temp_piece.getTeamColor()) && (null != temp_piece.getTeamColor())) {
+                        // Get all moves the enemy piece can take
                         opposing_moves = temp_piece.pieceMoves(game_board, new ChessPosition(i, j));
+                        // If there are moves that piece can make
                         if (!opposing_moves.isEmpty()) {
+                            // Check each moves end position
                             for (ChessMove new_move : opposing_moves) {
+                                // If the end position is equal to the king's position
                                 if ((new_move.getEndPosition().getRow() == king_pos.getRow()) &&
                                         (new_move.getEndPosition().getColumn() == king_pos.getColumn())) {
+//                                    System.out.println("In Check: Start_pos: " + new_move.getStartPosition().getRow() + ", " + new_move.getStartPosition().getColumn()
+//                                            + " End_pos: "+ new_move.getEndPosition().getRow() + ", " + new_move.getEndPosition().getColumn());
+//                                    System.out.println();
                                     return true;
                                 }
+//                                System.out.println("No Danger: Start_pos: " + new_move.getStartPosition().getRow() + ", " + new_move.getStartPosition().getColumn()
+//                                        + "; End_pos: "+ new_move.getEndPosition().getRow() + ", " + new_move.getEndPosition().getColumn());
                             }
                         }
                     }
                 }
             }
         }
+//        System.out.println("Not in check");
+//        System.out.println();
         return false;
 
     }
@@ -255,9 +334,8 @@ public class ChessGame {
 
         // Makes a move for each move in king_moves and checks if he is inCheck
         int counter = 0;
-        if (king_moves == null) {
-        }
-        else {
+        if ((king_moves != null) && (!king_moves.isEmpty())) {
+//            System.out.println(king_moves.size());
             for (ChessMove my_move : king_moves) {
                 // Add a move the piece to the new position on the board
                 game_board.addPiece(my_move.getEndPosition(), new ChessPiece(getTeamTurn(), ChessPiece.PieceType.KING));
@@ -277,6 +355,9 @@ public class ChessGame {
 
                 }
             }
+        }
+        else {
+            return false;
         }
 
         // If he cannot make moves, return false
@@ -310,17 +391,22 @@ public class ChessGame {
                 // Gets a piece from the board
                 temp_piece = game_board.getPiece(new ChessPosition(i, j));
                 // If the piece is the same color as teamColor, assign it to temp_piece
-                if (temp_piece.getTeamColor() == teamColor) {
-                    my_piece = temp_piece;
-                    my_moves = my_piece.pieceMoves(game_board, new ChessPosition(i, j));
+                if (temp_piece != null) {
+                    if (temp_piece.getTeamColor() == teamColor) {
+                        my_piece = temp_piece;
+                        my_moves = my_piece.pieceMoves(game_board, new ChessPosition(i, j));
 
 
+                    }
                 }
             }
         }
 
         // If he cannot make moves, return false
-        if (my_moves.isEmpty()) {
+        if (!my_moves.isEmpty()) {
+            if (team_color == teamColor) {
+                return true;
+            }
             return false;
         }
         // If he can make moves, return true
@@ -366,5 +452,13 @@ public class ChessGame {
                 "team_color=" + team_color +
                 ", game_board=" + game_board +
                 '}';
+    }
+    public static void printCharArray(char[][] array) {
+        for (int row = 0; row < array.length; row++) {
+            for (int col = 0; col < array[row].length; col++) {
+//                System.out.print(array[row][col] + " ");
+            }
+//            System.out.println();  // Move to the next line after printing each row
+        }
     }
 }

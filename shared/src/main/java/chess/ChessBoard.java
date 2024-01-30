@@ -98,4 +98,52 @@ public class ChessBoard {
         ChessBoard that = (ChessBoard) o;
         return Arrays.deepEquals(chess_board, that.chess_board);
     }
+
+
+    public char[][] getBoard() {
+        char[][] board = new char[8][8];
+
+        ChessPiece temp_piece;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                temp_piece = getPiece(new ChessPosition(i+1, j+1));
+                if (temp_piece != null) {
+                    if (temp_piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                        if (temp_piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                            board[i][j] = 'p';
+                        } else if (temp_piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
+                            board[i][j] = 'q';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.KING) {
+                            board[i][j] = 'k';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+                            board[i][j] = 'r';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+                            board[i][j] = 'n';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
+                            board[i][j] = 'b';
+                        }
+                    }
+                    if (temp_piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        if (temp_piece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                            board[i][j] = 'P';
+                        } else if (temp_piece.getPieceType() == ChessPiece.PieceType.QUEEN) {
+                            board[i][j] = 'Q';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.KING) {
+                            board[i][j] = 'K';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.ROOK) {
+                            board[i][j] = 'R';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.KNIGHT) {
+                            board[i][j] = 'N';
+                        }else if (temp_piece.getPieceType() == ChessPiece.PieceType.BISHOP) {
+                            board[i][j] = 'B';
+                        }
+                    }
+                }
+                else {
+                    board[i][j] = '.';
+                }
+            }
+        }
+        return board;
+    }
 }
