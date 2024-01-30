@@ -122,7 +122,7 @@ public class ChessGame {
         }
 
         // If there is no piece there, return null
-        return null;
+        return valid_moves;
     }
 
     /**
