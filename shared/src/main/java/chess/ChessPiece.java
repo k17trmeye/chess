@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import java.util.HashSet;
@@ -64,7 +65,7 @@ public class ChessPiece {
 
 
         // Collection of valid moves
-        var valid_moves = new HashSet<ChessMove>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
 
         // Variables to create each move
         int new_row;

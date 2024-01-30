@@ -54,7 +54,7 @@ public class ChessGame {
         // Get the piece at that position
         ChessPiece selected_piece = game_board.getPiece(startPosition);
         Collection<ChessMove> all_moves;
-        Collection<ChessMove> valid_moves = new ArrayList<>();
+        ArrayList<ChessMove> valid_moves = new ArrayList<>();
         ChessBoard temp_board = game_board;
 
         char[][] printBoard;
