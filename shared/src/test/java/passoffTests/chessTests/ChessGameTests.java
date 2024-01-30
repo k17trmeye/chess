@@ -317,7 +317,7 @@ public class ChessGameTests {
         //try not getting out of check
         Assertions.assertThrows(InvalidMoveException.class, () -> game.makeMove(
                 getNewMove(getNewPosition(1, 7), getNewPosition(1, 8), null)));
-
+        System.out.println("Testing");
         game.makeMove(getNewMove(getNewPosition(2, 7), getNewPosition(3, 6), null));
         Assertions.assertFalse(game.isInCheck(ChessGame.TeamColor.WHITE),
                 "White is not in check but isInCheck returned true");

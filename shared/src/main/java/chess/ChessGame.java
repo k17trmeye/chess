@@ -56,9 +56,7 @@ public class ChessGame {
 
         // If there is a piece, return the positions it can take given the board and the start position
         if (selected_piece != null) {
-            if (!isInCheck(team_color)) {
-                return selected_piece.pieceMoves(game_board, startPosition);
-            }
+            return selected_piece.pieceMoves(game_board, startPosition);
         }
 
         // If there is no piece there, return null
@@ -73,41 +71,79 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         // Grabs a collection of valid_moves
-        Collection<ChessMove> valid_moves = validMoves(move.getStartPosition());
+        Collection<ChessMove> valid_moves;
+        valid_moves = validMoves(move.getStartPosition());
+
+        // Boolean to set if any pieces are added
+        boolean pieces_added = false;
+
+        ChessPiece.PieceType piece_type = game_board.getPiece(move.getStartPosition()).getPieceType();
+        ChessPiece.PieceType promotion_type = move.getPromotionPiece();
 
         // Check to see that the move is the right team color
-        if ((game_board.getPiece(move.getStartPosition()).getTeamColor() == team_color) && (valid_moves != null)) {
-            // Loop through the Collection
-            for (ChessMove single_move : valid_moves) {
-                // If the move is in the collection of valid_moves, make the move
-                if ((move.getEndPosition().getRow() == single_move.getEndPosition().getRow()) &&
-                        (move.getEndPosition().getColumn() == single_move.getEndPosition().getColumn())) {
-                    // Add a move the piece to the new position on the board
-                    game_board.addPiece(move.getEndPosition(), new ChessPiece(getTeamTurn(), game_board.getPiece(move.getStartPosition()).getPieceType()));
-
-                    // Add a null piece to the previous position
-                    game_board.addPiece(move.getStartPosition(), null);
-
-                    // Make sure that move doesn't leave the king in check
-                    if (isInCheck(team_color)) {
-                        // If it enters in this loop, undo previous move
-                        // Add a move the piece to the new position on the board
-                        game_board.addPiece(move.getEndPosition(), null);
-
-                        // Add a null piece to the previous position
-                        game_board.addPiece(move.getStartPosition(), new ChessPiece(getTeamTurn(),
-                                game_board.getPiece(move.getStartPosition()).getPieceType()));
-                        throw new InvalidMoveException();
-                    }
-                }
-            }
-            if (valid_moves == null) {
-                throw new InvalidMoveException();
-            }
-
+        if (valid_moves == null) {
+            throw new InvalidMoveException();
         }
         else {
-            throw new InvalidMoveException();
+            if ((game_board.getPiece(move.getStartPosition()).getTeamColor() == team_color) &&
+                    (game_board.getPiece(move.getStartPosition()) != null)) {
+                // Loop through the Collection
+                for (ChessMove single_move : valid_moves) {
+                    // If the move is in the collection of valid_moves, make the move
+                    if ((move.getEndPosition().getRow() == single_move.getEndPosition().getRow()) &&
+                            (move.getEndPosition().getColumn() == single_move.getEndPosition().getColumn())) {
+                        if ((piece_type == ChessPiece.PieceType.PAWN) && (promotion_type != null)) {
+                            // Add a move the piece to the new position on the board
+                            game_board.addPiece(move.getEndPosition(), new ChessPiece(getTeamTurn(), promotion_type));
+
+                            // Add a null piece to the previous position
+                            game_board.addPiece(move.getStartPosition(), null);
+
+                            // Set boolean true
+                            pieces_added = true;
+
+                            // Make sure that move doesn't leave the king in check
+                            if (isInCheck(team_color)) {
+                                // If it enters in this loop, undo previous move
+                                // Add a move the piece to the new position on the board
+                                game_board.addPiece(move.getEndPosition(), null);
+
+                                // Add a null piece to the previous position
+                                game_board.addPiece(move.getStartPosition(), new ChessPiece(getTeamTurn(), promotion_type));
+                                throw new InvalidMoveException();
+                            }
+                        }
+                        else {
+
+                            // Add a move the piece to the new position on the board
+                            game_board.addPiece(move.getEndPosition(), new ChessPiece(getTeamTurn(), piece_type));
+
+                            // Add a null piece to the previous position
+                            game_board.addPiece(move.getStartPosition(), null);
+
+                            // Set boolean true
+                            pieces_added = true;
+
+                            // Make sure that move doesn't leave the king in check
+                            if (isInCheck(team_color)) {
+                                // If it enters in this loop, undo previous move
+                                // Add a move the piece to the new position on the board
+                                game_board.addPiece(move.getEndPosition(), null);
+
+                                // Add a null piece to the previous position
+                                game_board.addPiece(move.getStartPosition(), new ChessPiece(getTeamTurn(), piece_type));
+                                throw new InvalidMoveException();
+                            }
+                        }
+                    }
+                }
+                if (!pieces_added) {
+                    throw new InvalidMoveException();
+                }
+            }
+            else {
+                throw new InvalidMoveException();
+            }
         }
 
         // Change move to other team
@@ -152,9 +188,9 @@ public class ChessGame {
         ChessPosition king_pos = new ChessPosition(my_row, my_col);
 
         // Get the valid move from the other team and put into a Collection
-        Collection<ChessMove> opposing_moves = new ArrayList<>();
-        Collection<ChessMove> total_moves = new ArrayList<>();
-        // Find the king given the team color on the board
+        Collection<ChessMove> opposing_moves;
+
+        // Find iterate through all enemy pieces on the board
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 // Gets a piece from the board
@@ -198,12 +234,14 @@ public class ChessGame {
                 // Gets a piece from the board
                 temp_piece = game_board.getPiece(new ChessPosition(i, j));
                 // If the piece is a King with the same color, assign it to king_piece
-                if (temp_piece.getTeamColor() == teamColor) {
-                    if (temp_piece.getPieceType() == ChessPiece.PieceType.KING) {
-                        king_piece = temp_piece;
-                        // Save the position to my_row, my_col
-                        my_row = i;
-                        my_col = j;
+                if (temp_piece != null) {
+                    if (temp_piece.getTeamColor() == teamColor) {
+                        if (temp_piece.getPieceType() == ChessPiece.PieceType.KING) {
+                            king_piece = temp_piece;
+                            // Save the position to my_row, my_col
+                            my_row = i;
+                            my_col = j;
+                        }
                     }
                 }
             }
@@ -211,17 +249,43 @@ public class ChessGame {
 
         // Find what moves the King can make
         Collection<ChessMove> king_moves = null;
-        if(king_piece.getPieceType() != null) {
+        if(king_piece.getPieceType() == ChessPiece.PieceType.KING) {
             king_moves = king_piece.pieceMoves(game_board, new ChessPosition(my_row, my_col));
         }
 
+        // Makes a move for each move in king_moves and checks if he is inCheck
+        int counter = 0;
+        if (king_moves == null) {
+        }
+        else {
+            for (ChessMove my_move : king_moves) {
+                // Add a move the piece to the new position on the board
+                game_board.addPiece(my_move.getEndPosition(), new ChessPiece(getTeamTurn(), ChessPiece.PieceType.KING));
+
+                // Add a null piece to the previous position
+                game_board.addPiece(my_move.getStartPosition(), null);
+
+                if (isInCheck(teamColor)) {
+                    // If it enters in this loop, undo previous move
+                    // Add a move the piece to the new position on the board
+                    game_board.addPiece(my_move.getEndPosition(), null);
+
+                    // Add a null piece to the previous position
+                    game_board.addPiece(my_move.getStartPosition(), new ChessPiece(getTeamTurn(), ChessPiece.PieceType.KING));
+
+                    counter += 1;
+
+                }
+            }
+        }
+
         // If he cannot make moves, return false
-        if (king_moves.isEmpty()) {
-            return false;
+        if (king_moves.size() == counter) {
+            return true;
         }
         // If he can make moves, return true
         else {
-            return true;
+            return false;
         }
     }
 
