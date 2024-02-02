@@ -11,7 +11,7 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
-
+    // Working
     private TeamColor team_color;
     private ChessBoard game_board;
 
