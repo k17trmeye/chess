@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class AuthData_DAO {
+public abstract class AuthData_MEM implements DataAccess{
     private final List<AuthData> DB_AuthData;
 
-    public AuthData_DAO() {
+    public AuthData_MEM() {
         this.DB_AuthData = new ArrayList<>();
     }
 
@@ -17,7 +17,7 @@ public class AuthData_DAO {
         return DB_AuthData;
     }
 
-    public void clear() throws DataAccessException {
+    public void clearAuthData(){
         for (AuthData authData : DB_AuthData) {
             DB_AuthData.remove(authData);
         }

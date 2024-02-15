@@ -4,12 +4,11 @@ import model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
-public class UserData_DAO {
+public abstract class UserData_MEM implements DataAccess{
     private final List<UserData> DB_UserData;
 
-    public UserData_DAO() {
+    public UserData_MEM() {
         this.DB_UserData = new ArrayList<>();
     }
 
@@ -17,13 +16,13 @@ public class UserData_DAO {
         return DB_UserData;
     }
 
-    public void clear() throws DataAccessException {
+    public void clearUserData() {
         for (UserData userData : DB_UserData) {
             DB_UserData.remove(userData);
         }
     }
 
-    public String checkUserName(String userName) throws DataAccessException {
+    public String checkUserName(String userName) {
         for (UserData userData : DB_UserData) {
             if (userData.getUsername().equals(userName)) {
                 return userData.getUsername();
@@ -32,7 +31,7 @@ public class UserData_DAO {
         return null;
     }
 
-    public void createUser(String userName, String password, String email) throws DataAccessException {
+    public void createUser(String userName, String password, String email) {
         // Create a new user
         UserData newUser = new UserData(userName, password, email);
 

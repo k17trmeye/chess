@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GameData_DAO {
+public abstract class GameData_MEM implements DataAccess{
     private final List<GameData> DB_GameData;
 
-    public GameData_DAO() {
+    public GameData_MEM() {
         this.DB_GameData = new ArrayList<>();
     }
 
@@ -18,7 +18,7 @@ public class GameData_DAO {
         return DB_GameData;
     }
 
-    public void clear() throws DataAccessException {
+    public void clearGameData(){
         for (GameData gameData : DB_GameData) {
             DB_GameData.remove(gameData);
         }
