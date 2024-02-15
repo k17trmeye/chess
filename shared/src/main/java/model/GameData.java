@@ -6,18 +6,17 @@ import java.util.Objects;
 
 public class GameData {
     private final Integer gameID;
-    private final String whiteUsername;
-    private final String blackUsername;
+    private static String whiteUsername;
+    private static String blackUsername;
     private final String gameName;
     private final ChessGame game;
 
-    public GameData(Integer gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
+    public GameData(Integer gameID, String new_whiteUsername, String new_blackUsername, String gameName, ChessGame game) {
         this.gameID = gameID;
-        this.whiteUsername = whiteUsername;
-        this.blackUsername = blackUsername;
+        whiteUsername = new_whiteUsername;
+        blackUsername = new_blackUsername;
         this.gameName = gameName;
-        this.game = game;
-
+        this.game = new ChessGame();
     }
 
     public Integer getGameID() {
@@ -38,6 +37,15 @@ public class GameData {
 
     public ChessGame getGame() {
         return game;
+    }
+
+    public void addPlayer(String userName, String playerColor) {
+        if (playerColor.equals("WHITE")) {
+            whiteUsername = userName;
+        }
+        else if (playerColor.equals("BLACK")) {
+            blackUsername = userName;
+        }
     }
 
     @Override
