@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class AuthData_MEM implements DataAccess{
+public abstract class AuthData_MEM implements AuthData_INT{
     private final List<AuthData> DB_AuthData;
 
     public AuthData_MEM() {

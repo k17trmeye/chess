@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public abstract class GameData_MEM implements DataAccess{
+public abstract class GameData_MEM implements GameData_INT{
     private final List<GameData> DB_GameData;
 
     public GameData_MEM() {

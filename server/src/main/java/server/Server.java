@@ -1,6 +1,9 @@
 package server;
 
+import service.Service;
 import spark.*;
+
+import service.*;
 
 public class Server {
 
@@ -8,8 +11,7 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-
-        // Register your endpoints and handle exceptions here.
+        
 
         Spark.awaitInitialization();
         return Spark.port();

@@ -5,7 +5,7 @@ import model.UserData;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class UserData_MEM implements DataAccess{
+public abstract class UserData_MEM implements UserData_INT{
     private final List<UserData> DB_UserData;
 
     public UserData_MEM() {
