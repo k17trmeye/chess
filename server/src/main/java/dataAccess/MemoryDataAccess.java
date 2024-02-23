@@ -21,16 +21,12 @@ public class MemoryDataAccess implements DataAccess{
     }
 
     @Override
-    public boolean clearUserData() {
-        for (UserData userData : DB_UserData) {
-            DB_UserData.remove(userData);
-        }
-        return DB_UserData.isEmpty();
+    public void clearUserData() {
+        DB_UserData.clear();
     }
     @Override
     public String checkUserName(String userName) {
         for (UserData userData : DB_UserData) {
-            System.out.println(userData.getUsername() + ", " + userName);
             if (userData.getUsername().equals(userName)) {
                 return userData.getUsername();
             }
@@ -40,7 +36,7 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public String createUser(String userName, String password, String email) {
         // Create a new user
-        UserData newUser = new UserData(userName, password, email);
+        UserData newUser = new UserData(userName, password, email, false);
 
         // Add the new user to the database
         DB_UserData.add(newUser);
@@ -56,6 +52,38 @@ public class MemoryDataAccess implements DataAccess{
         }
         return null;
     }
+    @Override
+    public boolean returnLoginStatus(String username) {
+        for (UserData userData : DB_UserData) {
+            if (userData.getUsername().equals(username)) {
+                return userData.getLoggedIn();
+            }
+        }
+        return false;
+    }
+    @Override
+    public void setLoggedIn(String username) {
+        for (UserData userData : DB_UserData) {
+            if (userData.getUsername().equals(username)) {
+                if (!userData.getLoggedIn()) {
+                    userData.setLoggedIn();
+                }
+            }
+        }
+    }
+    @Override
+    public boolean setLoggedOut(String username) {
+        for (UserData userData : DB_UserData) {
+            if (userData.getUsername().equals(username)) {
+                if (!userData.getLoggedIn()) {
+                    userData.setLoggedOut();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // AuthData functions
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,14 +94,11 @@ public class MemoryDataAccess implements DataAccess{
         return DB_AuthData;
     }
     @Override
-    public boolean clearAuthData(){
-        for (AuthData authData : DB_AuthData) {
-            DB_AuthData.remove(authData);
-        }
-        return  DB_AuthData.isEmpty();
+    public void clearAuthData(){
+        DB_AuthData.clear();
     }
     @Override
-    public String createAuth (String username) {
+    public AuthData createAuth (String username) {
         // Create a random 12 character string for the authToken
         int length = 12;
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -84,6 +109,11 @@ public class MemoryDataAccess implements DataAccess{
             sb.append(characters.charAt(index));
         }
 
+        for (AuthData authData : DB_AuthData) {
+            if (sb.toString().equals(authData.getAuthToken())) {
+                return null;
+            }
+        }
         // Create a new AuthData
         AuthData newAuthData = new AuthData(username, sb.toString());
 
@@ -91,14 +121,12 @@ public class MemoryDataAccess implements DataAccess{
         DB_AuthData.add(newAuthData);
 
         // Return the authToken
-        return sb.toString();
+        return newAuthData;
     }
     @Override
     public String getAuthToken (String username) {
         for (AuthData authData : DB_AuthData) {
-            System.out.println(authData.getUsername() + ", " + username);
             if (authData.getUsername().equals(username)) {
-                System.out.println("here");
                 return authData.getAuthToken();
             }
         }
@@ -107,7 +135,7 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public String getUsername (String authToken) {
         for (AuthData authData : DB_AuthData) {
-            if (authData.getUsername().equals(authToken)) {
+            if (authData.getAuthToken().equals(authToken)) {
                 return authData.getUsername();
             }
         }
@@ -116,7 +144,7 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public boolean deleteAuth (String authToken) {
         for (AuthData authData : DB_AuthData) {
-            if (authData.getUsername().equals(authToken)) {
+            if (authData.getAuthToken().equals(authToken)) {
                 DB_AuthData.remove(authData);
                 return true;
             }
@@ -133,25 +161,27 @@ public class MemoryDataAccess implements DataAccess{
         return DB_GameData;
     }
     @Override
-    public boolean clearGameData(){
-        for (GameData gameData : DB_GameData) {
-            DB_GameData.remove(gameData);
-        }
-        return DB_GameData.isEmpty();
+    public void clearGameData(){
+        DB_GameData.clear();
     }
     @Override
     public List<GameData> listGames() {
         return DB_GameData;
     }
     @Override
-    public int createGame(String username, String gameName) {
+    public Integer createGame(String gameName) {
         // Create a random 6 digit int for the gameID
         Random random = new Random();
-        int randomNumber = random.nextInt(900000) + 100000;
+        Integer randomNumber = random.nextInt(9000) + 1000;
 
         // Create new GameData
-        GameData newGame = new GameData(randomNumber, username + "_1",
-                username + "_2", gameName, new ChessGame());
+        for (GameData gameData : DB_GameData) {
+            if (gameData.getGameID().equals(randomNumber)){
+                return 0;
+            }
+        }
+        GameData newGame = new GameData(randomNumber, null,
+                null, gameName, new ChessGame());
 
         // Add newGame to DataBase
         DB_GameData.add(newGame);
@@ -172,8 +202,7 @@ public class MemoryDataAccess implements DataAccess{
     public boolean joinGame(String username, String playerColor, Integer gameID) {
         for (GameData eachGame : DB_GameData) {
             if (eachGame.getGameID().equals(gameID)) {
-                eachGame.addPlayer(username, playerColor);
-                return true;
+                return eachGame.addPlayer(username, playerColor);
             }
         }
         return false;

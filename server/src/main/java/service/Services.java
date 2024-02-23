@@ -1,6 +1,7 @@
 package service;
 
 import dataAccess.*;
+import model.AuthData;
 import model.GameData;
 
 import java.util.List;
@@ -12,20 +13,14 @@ public class Services {
         this.dataAccess = dataAccess;
     }
 
-    public boolean clear() throws DataAccessException {
-        boolean dataEmpty = dataAccess.clearUserData();
-        boolean authEmpty = dataAccess.clearAuthData();
-        boolean gameEmpty = dataAccess.clearGameData();
-
-        return (dataEmpty & authEmpty & gameEmpty);
+    public void clear() throws DataAccessException {
+        dataAccess.clearUserData();
+        dataAccess.clearAuthData();
+        dataAccess.clearGameData();
     }
 
     public boolean checkPassword(String username, String password) throws DataAccessException {
-        String user_password = dataAccess.getPassword(username);
-        if (password.equals(user_password)) {
-            return true;
-        }
-        return false;
+        return password.equals(dataAccess.getPassword(username));
     }
 
     public String getToken(String username) throws DataAccessException {
@@ -40,7 +35,7 @@ public class Services {
         return dataAccess.createUser(username, password, email);
     }
 
-    public String createAuth(String username) throws DataAccessException{
+    public AuthData createAuth(String username) throws DataAccessException{
         return dataAccess.createAuth(username);
     }
 
@@ -48,11 +43,35 @@ public class Services {
         return dataAccess.listGames();
     }
 
-    public String getAuthToken(String username) throws DataAccessException {
-        return dataAccess.getUsername(username);
+    public String getUsername(String authToken) throws DataAccessException {
+        return dataAccess.getUsername(authToken);
     }
 
     public boolean deleteAuth(String authToken) throws DataAccessException {
         return dataAccess.deleteAuth(authToken);
     }
+
+    public List<GameData> listGames() throws DataAccessException{
+        return dataAccess.listGames();
+    }
+
+    public Integer createGame(String gameName) throws DataAccessException{
+        return dataAccess.createGame(gameName);
+    }
+    public boolean returnLoggedIn(String userName) throws DataAccessException{
+        return dataAccess.returnLoginStatus(userName);
+    }
+    public void setLoggedIn(String userName) throws DataAccessException{
+        dataAccess.setLoggedIn(userName);
+    }
+    public boolean setLoggedOut(String userName) throws DataAccessException{
+        return dataAccess.setLoggedOut(userName);
+    }
+    public Integer getGame(Integer gameID) throws DataAccessException {
+        return dataAccess.getGame(gameID);
+    }
+    public boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException {
+        return dataAccess.joinGame(username, playerColor, gameID);
+    }
+
 }

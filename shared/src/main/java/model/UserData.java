@@ -7,10 +7,13 @@ public class UserData {
     private final String password;
     private final String email;
 
-    public UserData(String username, String password, String email) {
+    private static boolean loggedIn;
+
+    public UserData(String username, String password, String email, boolean loggedIn) {
         this.username = username;
         this.password = password;
         this.email = email;
+        UserData.loggedIn = loggedIn;
     }
 
     public String getUsername() {
@@ -23,6 +26,18 @@ public class UserData {
 
     public String getEmail() {
         return email;
+    }
+
+    public boolean getLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn() {
+        loggedIn = true;
+    }
+
+    public void setLoggedOut() {
+        loggedIn = false;
     }
 
     @Override

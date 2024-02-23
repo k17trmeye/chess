@@ -39,13 +39,16 @@ public class GameData {
         return game;
     }
 
-    public void addPlayer(String userName, String playerColor) {
-        if (playerColor.equals("WHITE")) {
+    public boolean addPlayer(String userName, String playerColor) {
+        if (playerColor.equals("WHITE") && whiteUsername == null) {
             whiteUsername = userName;
+            return true;
         }
-        else if (playerColor.equals("BLACK")) {
+        else if (playerColor.equals("BLACK") && blackUsername == null) {
             blackUsername = userName;
+            return true;
         }
+        return false;
     }
 
     @Override

@@ -34,7 +34,7 @@ public class AuthData {
 
     @Override
     public String toString() {
-        return "AuthData{" +
+        return "{" +
                 "authToken='" + authToken + '\'' +
                 ", username='" + username + '\'' +
                 '}';
