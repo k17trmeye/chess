@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class GameData {
     private final Integer gameID;
-    private static String whiteUsername;
-    private static String blackUsername;
+    private String whiteUsername;
+    private String blackUsername;
     private final String gameName;
     private final ChessGame game;
 

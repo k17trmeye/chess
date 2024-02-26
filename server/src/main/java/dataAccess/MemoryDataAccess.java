@@ -100,18 +100,26 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public AuthData createAuth (String username) {
         // Create a random 12 character string for the authToken
-        int length = 12;
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(length);
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            sb.append(characters.charAt(index));
-        }
+        StringBuilder sb;
+        boolean valid = false;
+        while (true) {
+            int length = 12;
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+            sb = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                int index = random.nextInt(characters.length());
+                sb.append(characters.charAt(index));
+            }
 
-        for (AuthData authData : DB_AuthData) {
-            if (sb.toString().equals(authData.getAuthToken())) {
-                return null;
+            for (AuthData authData : DB_AuthData) {
+                if (sb.toString().equals(authData.getAuthToken())) {
+                    valid = true;
+                }
+            }
+
+            if (!valid) {
+                break;
             }
         }
         // Create a new AuthData
@@ -125,12 +133,34 @@ public class MemoryDataAccess implements DataAccess{
     }
     @Override
     public String getAuthToken (String username) {
-        for (AuthData authData : DB_AuthData) {
-            if (authData.getUsername().equals(username)) {
-                return authData.getAuthToken();
+        StringBuilder sb;
+        boolean valid = false;
+        while (true) {
+            int length = 12;
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+            sb = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                int index = random.nextInt(characters.length());
+                sb.append(characters.charAt(index));
+            }
+
+            for (AuthData authData : DB_AuthData) {
+                if (sb.toString().equals(authData.getAuthToken())) {
+                    valid = true;
+                }
+            }
+
+            if (!valid) {
+                break;
             }
         }
-        return null;
+        // Create a new AuthData
+        AuthData newAuthData = new AuthData(username, sb.toString());
+
+        // Add new AuthData to DataBase
+        DB_AuthData.add(newAuthData);
+        return sb.toString();
     }
     @Override
     public String getUsername (String authToken) {
@@ -170,14 +200,14 @@ public class MemoryDataAccess implements DataAccess{
     }
     @Override
     public Integer createGame(String gameName) {
-        // Create a random 6 digit int for the gameID
+        // Create a random 4 digit int for the gameID
         Random random = new Random();
         Integer randomNumber = random.nextInt(9000) + 1000;
 
         // Create new GameData
         for (GameData gameData : DB_GameData) {
             if (gameData.getGameID().equals(randomNumber)){
-                return 0;
+                randomNumber = random.nextInt(9000) + 1000;
             }
         }
         GameData newGame = new GameData(randomNumber, null,
@@ -203,6 +233,25 @@ public class MemoryDataAccess implements DataAccess{
         for (GameData eachGame : DB_GameData) {
             if (eachGame.getGameID().equals(gameID)) {
                 return eachGame.addPlayer(username, playerColor);
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean getPlayerColor(String username, String playerColor, Integer gameID) {
+        for (GameData eachGame : DB_GameData) {
+            if (eachGame.getGameID().equals(gameID)) {
+                if (playerColor == "BLACK") {
+                    if (eachGame.getBlackUsername() == null) {
+                        return true;
+                    }
+                }
+                else if (playerColor == "WHITE") {
+                    if (eachGame.getBlackUsername() == null) {
+                        return true;
+                    }
+                }
             }
         }
         return false;

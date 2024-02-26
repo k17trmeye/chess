@@ -74,4 +74,8 @@ public class Services {
         return dataAccess.joinGame(username, playerColor, gameID);
     }
 
+    public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException {
+        return dataAccess.getPlayerColor(username, playerColor, gameID);
+    }
+
 }

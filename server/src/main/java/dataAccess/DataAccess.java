@@ -24,6 +24,7 @@ public interface DataAccess {
     Integer createGame(String gameName) throws DataAccessException;
     Integer getGame(Integer gameID) throws DataAccessException;
     boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException;
+    public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException;
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     // UserData functions
