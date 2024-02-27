@@ -6,10 +6,15 @@ import org.junit.jupiter.api.*;
 import passoffTests.testClasses.TestException;
 import service.Services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ChessServerTests {
     private static Services services;
+    private static AuthData authData;
+    private static AuthData nextAuthData;
     @BeforeAll
     public static void init() throws DataAccessException {
         services = new Services(new MemoryDataAccess());
@@ -18,8 +23,8 @@ public class ChessServerTests {
     public void init_test() throws DataAccessException {
         services.createUser("existingUser", "existingPassword", "existing@email.com");
         services.createUser("nextUser", "nextPassword", "next@email.com");
-        services.createAuth("existingUser");
-        services.createAuth("nextUser");
+        authData = services.createAuth("existingUser");
+        nextAuthData = services.createAuth("nextUser");
     }
     @AfterEach
     public void reset_test() throws DataAccessException {
@@ -77,4 +82,103 @@ public class ChessServerTests {
         assertNotEquals(true, deleted, "Error getting username");
     }
 
+    @Test
+    public void checkPasswordTest() throws TestException, DataAccessException {
+        // Valid Test
+        boolean test = services.checkPassword("existingUser","existingPassword");
+        assertTrue(test, "Error checking password");
+
+        // Invalid Test
+        test = services.checkPassword("existingUser", "existingPassword_1");
+        assertNotEquals(true, test, "Error checking invalid password");
+    }
+
+    @Test
+    public void getUserTest() throws TestException, DataAccessException {
+        // Valid Test
+        boolean test = services.checkPassword("existingUser","existingPassword");
+        assertTrue(test, "Error getting user");
+
+        // Invalid Test
+        test = services.checkPassword("existingUser", "existingPassword_1");
+        assertNotEquals(true, test, "Error getting invalid user");
+    }
+
+    @Test
+    public void getTokenTest() throws TestException, DataAccessException {
+        // Valid Test
+        String authToken = services.getToken("existingUser");
+        assertNotEquals(authToken, authData.getAuthToken(),"Error getting token");
+
+        // Invalid Test
+        String nextAuthToken = services.getToken("existingUser");
+        assertNotEquals(nextAuthToken, authToken, "Error getting invalid token");
+    }
+
+    @Test
+    public void checkUsernameTest() throws TestException, DataAccessException {
+        // Valid Test
+        String username = services.getUser("existingUser");
+        assertEquals(username, "existingUser","Error checking username");
+
+        // Invalid Test
+        String nextAuthToken = services.getUser("existingUser_1");
+        assertNull(nextAuthToken, "Error checking invalid username");
+    }
+
+    @Test
+    public void listGamesTest() throws TestException, DataAccessException {
+        // Valid Test
+        List<GameData> gameData = services.listGames();
+        List<GameData> testData = new ArrayList<>();
+        assertEquals(gameData, testData,"Error listing game");
+    }
+
+    @Test
+    public void createGameTest() throws TestException, DataAccessException {
+        // Valid Test
+        Integer gameID = services.createGame("gameName");
+        assertNotNull(gameID,"Error creating game");
+
+        // Invalid Test
+        Integer nextGameID = services.createGame("existingUser_1");
+        assertNotEquals(nextGameID, gameID,"Error not creating game");
+    }
+
+    @Test
+    public void getGameTest() throws TestException, DataAccessException {
+        // Valid Test
+        Integer gameID = services.createGame("gameName");
+        Integer retGameID = services.getGame(gameID);
+        assertEquals(gameID, retGameID, "Error getting game");
+
+        // Invalid Test
+        Integer nextGameID = services.getGame(gameID + 4);
+        assertEquals(nextGameID, 0,"Error not getting game");
+    }
+
+    @Test
+    public void joinGameTest() throws TestException, DataAccessException {
+        // Valid Test
+        Integer gameID = services.createGame("game");
+        boolean joined = services.joinGame("existingUser", "BLACK", gameID);
+        assertTrue(joined, "Error joining game");
+
+        // Invalid Test
+        joined = services.joinGame("nextUser", "BLACK", gameID);
+        assertFalse(joined, "Error not joining game");
+    }
+
+    @Test
+    public void getPlayerColorTest() throws TestException, DataAccessException {
+        // Valid Test
+        Integer gameID = services.createGame("game");
+        services.joinGame("existingUser", "BLACK", gameID);
+        boolean playerColor = services.getPlayerColor("existingUser", "BLACK", gameID);
+        assertFalse(playerColor, "Error getting player color");
+
+        // Invalid Test
+        playerColor = services.getPlayerColor("existingUser", "WHITE", gameID);
+        assertTrue(playerColor, "Invalid player color");
+    }
 }

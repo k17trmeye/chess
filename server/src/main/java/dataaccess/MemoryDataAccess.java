@@ -156,7 +156,7 @@ public class MemoryDataAccess implements DataAccess{
                     }
                 }
                 else if (playerColor == "WHITE") {
-                    if (eachGame.getBlackUsername() == null) {
+                    if (eachGame.getWhiteUsername() == null) {
                         return true;
                     }
                 }
