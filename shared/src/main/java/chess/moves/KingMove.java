@@ -10,232 +10,36 @@ public class KingMove {
     public KingMove () {
         kingMoves = new ArrayList<>();
     }
-    
+
     public ArrayList<ChessMove> kingMoveCal(ChessBoard board, Integer row, Integer col,
                                             ChessGame.TeamColor teamColor, ChessPosition myPosition) {
-        ChessPosition newPosition;
-        ChessMove newMove;
-        Integer newCol = col;
-        Integer newRow = row;
+        ArrayList<ChessMove> kingMoves = new ArrayList<>();
+
         int myRow = myPosition.getRow();
         int myCol = myPosition.getColumn();
 
-        // Move up once
-        newCol = myCol + 1;
-        newRow = myRow;
-        if (newCol > 8) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move down once
-        newRow = myRow;
-        newCol = myCol - 1;
-        if (newCol < 1) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move right once
-        newCol = myCol;
-        newRow = myRow + 1;
-        if (newRow > 8) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move left once
-        newCol = myCol;
-        newRow = myRow - 1;
-        if (newRow < 1) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move up left once
-        newCol = myCol + 1;
-        newRow = myRow + 1;
-        if ((newCol > 8) || (newRow > 8)) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move down left once
-        newCol = myCol + 1;
-        newRow = myRow - 1;
-        if ((newCol > 8) || (newRow < 1)) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move up right once
-        newCol = myCol - 1;
-        newRow = myRow + 1;
-        if ((newCol < 1) || (newRow > 8)) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
-
-        // Move down right once
-        newCol = myCol - 1;
-        newRow = myRow - 1;
-        if ((newCol < 1) || (newRow < 1)) {
-            // Do nothing
-        }
-        else {
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor != piece_inter.getTeamColor()) {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    kingMoves.add(newMove);
-                }
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                kingMoves.add(newMove);
-            }
-        }
+        addMoveIfValid(board, myRow, myCol + 1, myRow, myCol, teamColor, myPosition, kingMoves); // Move up once
+        addMoveIfValid(board, myRow, myCol - 1, myRow, myCol, teamColor, myPosition, kingMoves); // Move down once
+        addMoveIfValid(board, myRow + 1, myCol, myRow, myCol, teamColor, myPosition, kingMoves); // Move right once
+        addMoveIfValid(board, myRow - 1, myCol, myRow, myCol, teamColor, myPosition, kingMoves); // Move left once
+        addMoveIfValid(board, myRow + 1, myCol + 1, myRow, myCol, teamColor, myPosition, kingMoves); // Move up left once
+        addMoveIfValid(board, myRow - 1, myCol + 1, myRow, myCol, teamColor, myPosition, kingMoves); // Move down left once
+        addMoveIfValid(board, myRow + 1, myCol - 1, myRow, myCol, teamColor, myPosition, kingMoves); // Move up right once
+        addMoveIfValid(board, myRow - 1, myCol - 1, myRow, myCol, teamColor, myPosition, kingMoves); // Move down right once
 
         return kingMoves;
+    }
+
+    private void addMoveIfValid(ChessBoard board, int newRow, int newCol, int myRow, int myCol,
+                                ChessGame.TeamColor teamColor, ChessPosition myPosition,
+                                ArrayList<ChessMove> kingMoves) {
+        if (newRow >= 1 && newRow <= 8 && newCol >= 1 && newCol <= 8 && (newRow != myRow || newCol != myCol)) {
+            ChessPosition newPosition = new ChessPosition(newRow, newCol);
+            ChessPiece pieceInter = board.getPiece(newPosition);
+
+            if (pieceInter == null || teamColor != pieceInter.getTeamColor()) {
+                kingMoves.add(new ChessMove(myPosition, newPosition, null));
+            }
+        }
     }
 }
