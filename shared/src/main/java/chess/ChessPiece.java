@@ -271,7 +271,6 @@ public class ChessPiece {
                 if ((newCol >= 1) || !(newRow <= 8)) {
                     // Creates new position
                     newPosition = new ChessPosition(newRow, newCol);
-//                    System.out.println(newRow + ", " + newCol);
 
                     // Checks to see if another piece is on the new position
                     ChessPiece piece_inter = board.getPiece(newPosition);
@@ -595,14 +594,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -624,14 +621,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -653,14 +648,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -682,14 +675,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -711,14 +702,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -740,14 +729,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -769,14 +756,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -798,14 +783,12 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
                 else {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -832,13 +815,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                     }
                 }
 
@@ -856,13 +837,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                     }
                 }
             }
@@ -887,13 +866,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                            System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
 
@@ -911,13 +888,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                            System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                 }
             }
@@ -942,13 +917,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                          System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                      System.out.println(newRow + ", " + newCol);
                     }
                 }
 
@@ -965,13 +938,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                          System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                      System.out.println(newRow + ", " + newCol);
                     }
                 }
             }
@@ -996,13 +967,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                          System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                      System.out.println(newRow + ", " + newCol);
                     }
                 }
 
@@ -1020,13 +989,11 @@ public class ChessPiece {
                             // Adds the new position as a possible move
                             newMove = new ChessMove(myPosition, newPosition, null);
                             validMoves.add(newMove);
-//                          System.out.println(newRow + ", " + newCol);
                         }
                     } else {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                      System.out.println(newRow + ", " + newCol);
                     }
                 }
             }
@@ -1056,7 +1023,6 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                     break;
                 }
@@ -1065,7 +1031,6 @@ public class ChessPiece {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -1091,7 +1056,6 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                     break;
                 }
@@ -1099,7 +1063,6 @@ public class ChessPiece {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -1126,7 +1089,6 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                     break;
                 }
@@ -1134,7 +1096,6 @@ public class ChessPiece {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
 
@@ -1161,7 +1122,6 @@ public class ChessPiece {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         validMoves.add(newMove);
-//                        System.out.println(newRow + ", " + newCol);
                     }
                     break;
                 }
@@ -1169,7 +1129,6 @@ public class ChessPiece {
                     // Adds the new position as a possible move
                     newMove = new ChessMove(myPosition, newPosition, null);
                     validMoves.add(newMove);
-//                    System.out.println(newRow + ", " + newCol);
                 }
             }
         }

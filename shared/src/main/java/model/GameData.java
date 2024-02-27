@@ -11,10 +11,10 @@ public class GameData {
     private final String gameName;
     private final ChessGame game;
 
-    public GameData(Integer gameID, String new_whiteUsername, String new_blackUsername, String gameName, ChessGame game) {
+    public GameData(Integer gameID, String newWhiteusername, String newBlackusername, String gameName, ChessGame game) {
         this.gameID = gameID;
-        whiteUsername = new_whiteUsername;
-        blackUsername = new_blackUsername;
+        whiteUsername = newWhiteusername;
+        blackUsername = newBlackusername;
         this.gameName = gameName;
         this.game = new ChessGame();
     }

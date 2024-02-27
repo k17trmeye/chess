@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -11,7 +10,7 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] chess_board = new ChessPiece[8][8];
+    private ChessPiece[][] chessBoard = new ChessPiece[8][8];
 
     public ChessBoard() {
     }
@@ -23,7 +22,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        chess_board[position.getRow() - 1][position.getColumn() - 1] = piece;
+        chessBoard[position.getRow() - 1][position.getColumn() - 1] = piece;
     }
 
     /**
@@ -34,7 +33,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return chess_board[position.getRow() - 1][position.getColumn() - 1];
+        return chessBoard[position.getRow() - 1][position.getColumn() - 1];
     }
 
     /**
@@ -43,7 +42,7 @@ public class ChessBoard {
      */
     public void resetBoard() {
         // Initialize the pieces
-        chess_board = new ChessPiece[8][8];
+        chessBoard = new ChessPiece[8][8];
 
         // Add the White pieces
         this.addPiece(new ChessPosition(1, 1), new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK));
@@ -96,7 +95,7 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Arrays.deepEquals(chess_board, that.chess_board);
+        return Arrays.deepEquals(chessBoard, that.chessBoard);
     }
 
 

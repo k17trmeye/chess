@@ -9,14 +9,14 @@ import java.util.List;
 import java.util.Random;
 
 public class MemoryDataAccess implements DataAccess{
-    private final List<UserData> DB_UserData = new ArrayList<>();
+    private final List<UserData> dbUserdata = new ArrayList<>();
     @Override
     public void clearUserData() {
-        DB_UserData.clear();
+        dbUserdata.clear();
     }
     @Override
     public String checkUserName(String userName) {
-        for (UserData userData : DB_UserData) {
+        for (UserData userData : dbUserdata) {
             if (userData.getUsername().equals(userName)) {
                 return userData.getUsername();
             }
@@ -29,13 +29,13 @@ public class MemoryDataAccess implements DataAccess{
         UserData newUser = new UserData(userName, password, email, false);
 
         // Add the new user to the database
-        DB_UserData.add(newUser);
+        dbUserdata.add(newUser);
 
         return userName;
     }
     @Override
     public String getPassword(String username) {
-        for (UserData userData : DB_UserData) {
+        for (UserData userData : dbUserdata) {
             if (userData.getUsername().equals(username)) {
                 return userData.getPassword();
             }
@@ -44,7 +44,7 @@ public class MemoryDataAccess implements DataAccess{
     }
     @Override
     public void setLoggedIn(String username) {
-        for (UserData userData : DB_UserData) {
+        for (UserData userData : dbUserdata) {
             if (userData.getUsername().equals(username)) {
                 if (!userData.getLoggedIn()) {
                     userData.setLoggedIn();
@@ -53,10 +53,10 @@ public class MemoryDataAccess implements DataAccess{
         }
     }
 
-    private final List<AuthData> DB_AuthData = new ArrayList<>();
+    private final List<AuthData> dbAuthdata = new ArrayList<>();
     @Override
     public void clearAuthData(){
-        DB_AuthData.clear();
+        dbAuthdata.clear();
     }
     @Override
     public AuthData createAuth (String username) {
@@ -64,7 +64,7 @@ public class MemoryDataAccess implements DataAccess{
         String authToken = newAuthToken();
         AuthData newAuthData = new AuthData(username, authToken);
         // Add new AuthData to DataBase
-        DB_AuthData.add(newAuthData);
+        dbAuthdata.add(newAuthData);
         // Return the authToken
         return newAuthData;
     }
@@ -74,12 +74,12 @@ public class MemoryDataAccess implements DataAccess{
         String authToken = newAuthToken();
         AuthData newAuthData = new AuthData(username, authToken);
         // Add new AuthData to DataBase
-        DB_AuthData.add(newAuthData);
+        dbAuthdata.add(newAuthData);
         return authToken;
     }
     @Override
     public String getUsername (String authToken) {
-        for (AuthData authData : DB_AuthData) {
+        for (AuthData authData : dbAuthdata) {
             if (authData.getAuthToken().equals(authToken)) {
                 return authData.getUsername();
             }
@@ -88,23 +88,23 @@ public class MemoryDataAccess implements DataAccess{
     }
     @Override
     public boolean deleteAuth (String authToken) {
-        for (AuthData authData : DB_AuthData) {
+        for (AuthData authData : dbAuthdata) {
             if (authData.getAuthToken().equals(authToken)) {
-                DB_AuthData.remove(authData);
+                dbAuthdata.remove(authData);
                 return true;
             }
         }
         return false;
     }
 
-    private final List<GameData> DB_GameData = new ArrayList<>();
+    private final List<GameData> dbGamedata = new ArrayList<>();
     @Override
     public void clearGameData(){
-        DB_GameData.clear();
+        dbGamedata.clear();
     }
     @Override
     public List<GameData> listGames() {
-        return DB_GameData;
+        return dbGamedata;
     }
     @Override
     public Integer createGame(String gameName) {
@@ -113,7 +113,7 @@ public class MemoryDataAccess implements DataAccess{
         Integer randomNumber = random.nextInt(9000) + 1000;
 
         // Create new GameData
-        for (GameData gameData : DB_GameData) {
+        for (GameData gameData : dbGamedata) {
             if (gameData.getGameID().equals(randomNumber)){
                 randomNumber = random.nextInt(9000) + 1000;
             }
@@ -122,14 +122,14 @@ public class MemoryDataAccess implements DataAccess{
                 null, gameName, new ChessGame());
 
         // Add newGame to DataBase
-        DB_GameData.add(newGame);
+        dbGamedata.add(newGame);
 
         // Return gameID
         return randomNumber;
     }
     @Override
     public Integer getGame(Integer gameID) {
-        for (GameData eachGame : DB_GameData) {
+        for (GameData eachGame : dbGamedata) {
             if (eachGame.getGameID().equals(gameID)) {
                 return gameID;
             }
@@ -138,7 +138,7 @@ public class MemoryDataAccess implements DataAccess{
     }
     @Override
     public boolean joinGame(String username, String playerColor, Integer gameID) {
-        for (GameData eachGame : DB_GameData) {
+        for (GameData eachGame : dbGamedata) {
             if (eachGame.getGameID().equals(gameID)) {
                 return eachGame.addPlayer(username, playerColor);
             }
@@ -148,7 +148,7 @@ public class MemoryDataAccess implements DataAccess{
 
     @Override
     public boolean getPlayerColor(String username, String playerColor, Integer gameID) {
-        for (GameData eachGame : DB_GameData) {
+        for (GameData eachGame : dbGamedata) {
             if (eachGame.getGameID().equals(gameID)) {
                 if (playerColor == "BLACK") {
                     if (eachGame.getBlackUsername() == null) {
@@ -177,7 +177,7 @@ public class MemoryDataAccess implements DataAccess{
                 int index = random.nextInt(characters.length());
                 sb.append(characters.charAt(index));
             }
-            for (AuthData authData : DB_AuthData) {
+            for (AuthData authData : dbAuthdata) {
                 if (sb.toString().equals(authData.getAuthToken())) {
                     valid = true;
                 }
