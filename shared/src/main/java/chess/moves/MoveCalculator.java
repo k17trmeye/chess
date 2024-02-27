@@ -52,7 +52,6 @@ public class MoveCalculator {
         ArrayList<ChessMove> queenMoves2 =  rookMove.rookMoveCal(board, row, col, teamColor, myPosition);
 
         queenMoves1.addAll(queenMoves2);
-
         return queenMoves1;
     }
 
