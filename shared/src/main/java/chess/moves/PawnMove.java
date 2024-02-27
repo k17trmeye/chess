@@ -11,9 +11,9 @@ public class PawnMove {
         pawnMoves = new ArrayList<>();
     }
 
-    public ArrayList<ChessMove> PawnMoveCal(ChessBoard board, Integer row, Integer col,
-                                              ChessGame.TeamColor teamColor, ChessPiece.PieceType pieceType,
-                                              ChessPosition myPosition) {
+    public ArrayList<ChessMove> pawnMoveCal(ChessBoard board, Integer row, Integer col,
+                                            ChessGame.TeamColor teamColor, ChessPiece.PieceType pieceType,
+                                            ChessPosition myPosition) {
         ChessPosition newPosition;
         ChessMove newMove;
         Integer newCol = col;

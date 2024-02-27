@@ -10,8 +10,8 @@ public class QueenMove {
     public QueenMove () {
         queenMoves = new ArrayList<>();
     }
-    public ArrayList<ChessMove> QueenMoveCal(ChessBoard board, Integer row, Integer col,
-                                            ChessGame.TeamColor teamColor, ChessPosition myPosition) {
+    public ArrayList<ChessMove> queenMoveCal(ChessBoard board, Integer row, Integer col,
+                                             ChessGame.TeamColor teamColor, ChessPosition myPosition) {
         ChessPosition newPosition;
         ChessMove newMove;
         Integer newCol = col;

@@ -11,7 +11,7 @@ public class KnightMove {
         knightMoves = new ArrayList<>();
     }
 
-    public ArrayList<ChessMove> KnighMoveCal(ChessBoard board, Integer row, Integer col,
+    public ArrayList<ChessMove> knightMoveCal(ChessBoard board, Integer row, Integer col,
                                               ChessGame.TeamColor teamColor, ChessPosition myPosition) {
         ChessPosition newPosition;
         ChessMove newMove;
@@ -32,10 +32,10 @@ public class KnightMove {
                 newPosition = new ChessPosition(newRow, newCol);
 
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -54,10 +54,10 @@ public class KnightMove {
                 newPosition = new ChessPosition(newRow, newCol);
 
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -83,10 +83,10 @@ public class KnightMove {
                 newPosition = new ChessPosition(newRow, newCol);
 
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -105,10 +105,10 @@ public class KnightMove {
                 newPosition = new ChessPosition(newRow, newCol);
 
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -134,10 +134,10 @@ public class KnightMove {
                 // Creates new position
                 newPosition = new ChessPosition(newRow, newCol);
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -155,10 +155,10 @@ public class KnightMove {
                 // Creates new position
                 newPosition = new ChessPosition(newRow, newCol);
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -184,10 +184,10 @@ public class KnightMove {
                 newPosition = new ChessPosition(newRow, newCol);
 
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);
@@ -206,10 +206,10 @@ public class KnightMove {
                 newPosition = new ChessPosition(newRow, newCol);
 
                 // Checks to see if another piece is on the new position
-                ChessPiece piece_inter = board.getPiece(newPosition);
-                if (piece_inter != null) {
+                ChessPiece pieceInter = board.getPiece(newPosition);
+                if (pieceInter != null) {
                     // Check to see team_color
-                    if (teamColor != piece_inter.getTeamColor()) {
+                    if (teamColor != pieceInter.getTeamColor()) {
                         // Adds the new position as a possible move
                         newMove = new ChessMove(myPosition, newPosition, null);
                         knightMoves.add(newMove);

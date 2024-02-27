@@ -11,8 +11,8 @@ public class RookMove {
         rookMoves = new ArrayList<>();
     }
 
-    public ArrayList<ChessMove> RookMoveCal(ChessBoard board, Integer row, Integer col,
-                                              ChessGame.TeamColor teamColor, ChessPosition myPosition) {
+    public ArrayList<ChessMove> rookMoveCal(ChessBoard board, Integer row, Integer col,
+                                            ChessGame.TeamColor teamColor, ChessPosition myPosition) {
         ChessPosition newPosition;
         ChessMove newMove;
         Integer newCol = col;

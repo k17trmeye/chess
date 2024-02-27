@@ -11,7 +11,7 @@ public class BishopMove {
         bishopMoves = new ArrayList<>();
     }
 
-    public ArrayList<ChessMove> BishopMoveCal(ChessBoard board, Integer row, Integer col,
+    public ArrayList<ChessMove> bishopMoveCal(ChessBoard board, Integer row, Integer col,
                                               ChessGame.TeamColor teamColor, ChessPosition myPosition) {
         ChessPosition newPosition;
         ChessMove newMove;
