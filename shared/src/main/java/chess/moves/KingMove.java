@@ -10,6 +10,7 @@ public class KingMove {
     public KingMove () {
         kingMoves = new ArrayList<>();
     }
+    
     public ArrayList<ChessMove> kingMoveCal(ChessBoard board, Integer row, Integer col,
                                             ChessGame.TeamColor teamColor, ChessPosition myPosition) {
         ChessPosition newPosition;

@@ -52,22 +52,22 @@ public class ChessPiece {
         MoveCalculator moveCalculator = new MoveCalculator(myPosition.getRow(), myPosition.getColumn());
 
         if (pieceType == PieceType.BISHOP) {
-            validMoves = moveCalculator.BishopMoveCalculator(board, teamColor, myPosition);
+            validMoves = moveCalculator.bishopMoveCalculator(board, teamColor, myPosition);
         }
         if (pieceType == PieceType.PAWN) {
-            validMoves = moveCalculator.PawnMoveCalculator(board, teamColor, pieceType, myPosition);
+            validMoves = moveCalculator.pawnMoveCalculator(board, teamColor, pieceType, myPosition);
         }
         if (pieceType == PieceType.KING) {
-            validMoves = moveCalculator.KingMoveCalculator(board, teamColor, myPosition);
+            validMoves = moveCalculator.kingMoveCalculator(board, teamColor, myPosition);
         }
         if (pieceType == PieceType.KNIGHT) {
-            validMoves = moveCalculator.KnightMoveCalculator(board, teamColor, myPosition);
+            validMoves = moveCalculator.knightMoveCalculator(board, teamColor, myPosition);
         }
         if (pieceType == PieceType.ROOK) {
-            validMoves = moveCalculator.RookMoveCalculator(board, teamColor, myPosition);
+            validMoves = moveCalculator.rookMoveCalculator(board, teamColor, myPosition);
         }
         if (pieceType == PieceType.QUEEN) {
-            validMoves = moveCalculator.QueenMoveCalculator(board, teamColor, myPosition);
+            validMoves = moveCalculator.queenMoveCalculator(board, teamColor, myPosition);
         }
         return validMoves;
     }

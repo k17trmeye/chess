@@ -10,285 +10,49 @@ public class QueenMove {
     public QueenMove () {
         queenMoves = new ArrayList<>();
     }
+
     public ArrayList<ChessMove> queenMoveCal(ChessBoard board, Integer row, Integer col,
                                              ChessGame.TeamColor teamColor, ChessPosition myPosition) {
-        ChessPosition newPosition;
-        ChessMove newMove;
-        Integer newCol = col;
-        Integer newRow = row;
-        int myRow = myPosition.getRow();
-        int myCol = myPosition.getColumn();
+        ArrayList<ChessMove> queenMoves = new ArrayList<>();
 
+        // Define the possible directions for the queen's movement
+        int[] rowDirs = { 1, -1, 0, 0, 1, -1, 1, -1 };
+        int[] colDirs = { 0, 0, 1, -1, 1, -1, -1, 1 };
 
-        // Move up till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newCol++;
-            if (newCol > 8) {
-                break;
-            }
+        for (int i = 0; i < rowDirs.length; i++) {
+            int newRow = row;
+            int newCol = col;
 
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
+            // Move in the specified direction until you can't anymore
+            while (true) {
+                newRow += rowDirs[i];
+                newCol += colDirs[i];
 
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
+                // Check if the new position is out of the board bounds
+                if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
                     break;
                 }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
+
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                ChessPiece pieceInter = board.getPiece(newPosition);
+
+                if (pieceInter != null) {
+                    // If the piece belongs to the same team, stop
+                    if (teamColor == pieceInter.getTeamColor()) {
+                        break;
+                    } else {
+                        // Add the new position as a possible move
+                        queenMoves.add(new ChessMove(myPosition, newPosition, null));
+                        break;
+                    }
+                } else {
+                    // Add the new position as a possible move
+                    queenMoves.add(new ChessMove(myPosition, newPosition, null));
                 }
-                break;
-            }
-            else {
-
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move down till you can't anymore
-        newCol = myCol;
-        while (true) {
-            newCol--;
-            if (newCol < 1) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move left till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newRow--;
-            if (newRow < 1) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move down left up till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newRow++;
-            if (newRow > 8) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move up right till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newCol++;
-            newRow++;
-            if ((newCol > 8) || (newRow > 8)) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move right down till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newCol++;
-            newRow--;
-            if ((newCol > 8) || (newRow < 1)) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move left down till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newCol--;
-            newRow--;
-            if ((newCol < 1) || (newRow < 1)) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
-            }
-        }
-
-        // Move down left up till you can't anymore
-        newCol = myCol;
-        newRow = myRow;
-        while (true) {
-            newCol--;
-            newRow++;
-            if ((newCol < 1) || (newRow > 8)) {
-                break;
-            }
-
-            // Creates new position
-            newPosition = new ChessPosition(newRow, newCol);
-
-            // Checks to see if another piece is on the new position
-            ChessPiece piece_inter = board.getPiece(newPosition);
-            if (piece_inter != null) {
-                // Check to see team_color
-                if (teamColor == piece_inter.getTeamColor()) {
-                    break;
-                }
-                else {
-                    // Adds the new position as a possible move
-                    newMove = new ChessMove(myPosition, newPosition, null);
-                    queenMoves.add(newMove);
-                }
-                break;
-            }
-            else {
-                // Adds the new position as a possible move
-                newMove = new ChessMove(myPosition, newPosition, null);
-                queenMoves.add(newMove);
             }
         }
 
         return queenMoves;
     }
+
 }
