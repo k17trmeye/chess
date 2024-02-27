@@ -17,7 +17,7 @@ public interface DataAccess {
     Integer getGame(Integer gameID) throws DataAccessException;
     boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException;
     boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException;
-    
+
     void clearUserData() throws DataAccessException;
     String checkUserName(String userName) throws DataAccessException;
     String createUser(String userName, String password, String email) throws DataAccessException;

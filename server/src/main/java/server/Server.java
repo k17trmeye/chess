@@ -17,13 +17,13 @@ public class Server {
     public int run(int desiredPort) {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
-        Spark.delete("/db", this::ClearAll);
-        Spark.post("/user", this::RegisterUser);
-        Spark.post("/session", this::LoginUser);
-        Spark.delete("/session", this::LogOutUser);
-        Spark.get("/game", this::ListGames);
-        Spark.post("/game", this::CreateGame);
-        Spark.put("/game", this::JoinGame);
+        Spark.delete("/db", this::clearAll);
+        Spark.post("/user", this::registerUser);
+        Spark.post("/session", this::loginUser);
+        Spark.delete("/session", this::logOutUser);
+        Spark.get("/game", this::listGames);
+        Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -31,13 +31,13 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
-    public Object ClearAll(Request req, Response res) throws DataAccessException {
+    public Object clearAll(Request req, Response res) throws DataAccessException {
         services.clear();
         res.status(200);
         return "{}";
     }
 
-    public Object RegisterUser (Request req, Response res) throws DataAccessException {
+    public Object registerUser (Request req, Response res) throws DataAccessException {
         var user = new Gson().fromJson(req.body(), UserData.class);
         String username = services.getUser(user.getUsername());
         JsonObject jsonObject = new JsonObject();
@@ -65,7 +65,7 @@ public class Server {
         return json;
     }
 
-    public Object LoginUser (Request req, Response res) throws DataAccessException {
+    public Object loginUser (Request req, Response res) throws DataAccessException {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
         String username = jsonObject.get("username").getAsString();
         String password = jsonObject.get("password").getAsString();
@@ -102,7 +102,7 @@ public class Server {
         }
     }
 
-    public Object LogOutUser (Request req, Response res) throws DataAccessException {
+    public Object logOutUser (Request req, Response res) throws DataAccessException {
         String authToken = req.headers("Authorization");
         String username = services.getUsername(authToken);
         String json;
@@ -127,7 +127,7 @@ public class Server {
         return json;
     }
 
-    public Object ListGames (Request req, Response res) throws DataAccessException {
+    public Object listGames (Request req, Response res) throws DataAccessException {
         String authToken = req.headers("Authorization");
         String username = services.getUsername(authToken);
         JsonObject jsonObject = new JsonObject();
@@ -170,7 +170,7 @@ public class Server {
         return json;
     }
 
-    public Object CreateGame (Request req, Response res) throws DataAccessException {
+    public Object createGame (Request req, Response res) throws DataAccessException {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
 
         String json;
@@ -223,7 +223,7 @@ public class Server {
 
 
 
-    public Object JoinGame (Request req, Response res) throws DataAccessException {
+    public Object joinGame (Request req, Response res) throws DataAccessException {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
         String json;
         Gson gson = new Gson();

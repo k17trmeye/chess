@@ -19,10 +19,6 @@ public class ChessPiece {
         team_color = pieceColor;
         piece_type = type;
     }
-
-    /**
-     * The various different chess piece options
-     */
     public enum PieceType {
         KING,
         QUEEN,
@@ -32,15 +28,10 @@ public class ChessPiece {
         PAWN
     }
 
-    /**
-     * The various different chess piece options
-     */
     public enum TeamColor {
         BLACK,
         WHITE
     }
-
-
 
     /**
      * @return Which team this chess piece belongs to

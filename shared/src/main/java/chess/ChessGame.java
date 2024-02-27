@@ -52,77 +52,69 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         // Get the piece at that position
-        ChessPiece selected_piece = game_board.getPiece(startPosition);
-        Collection<ChessMove> all_moves;
-        ArrayList<ChessMove> valid_moves = new ArrayList<>();
-        ChessBoard temp_board = game_board;
+        ChessPiece selectedPiece = game_board.getPiece(startPosition);
+        Collection<ChessMove> allMoves;
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
+        ChessBoard tempBoard = game_board;
 
         char[][] printBoard;
         ChessPiece enemyPiece = null;
         boolean enemyHere = false;
 
         // If there is a piece, return the positions it can take given the board and the start position
-        if (selected_piece != null) {
+        if (selectedPiece != null) {
             // Grab all moves
-            all_moves =  selected_piece.pieceMoves(game_board, startPosition);
+            allMoves =  selectedPiece.pieceMoves(game_board, startPosition);
 
             // Iterate through all moves to check which ones don't leave the King in check
-            for (ChessMove each_move : all_moves) {
-                // Print the board
-//                printBoard = temp_board.getBoard();
-//                printCharArray(printBoard);
-
+            for (ChessMove each_move : allMoves) {
                 // Check if end position is on an enemy
                 if (game_board.getPiece(each_move.getEndPosition()) != null) {
-                    if (game_board.getPiece(each_move.getEndPosition()).getTeamColor() != selected_piece.getTeamColor()) {
+                    if (game_board.getPiece(each_move.getEndPosition()).getTeamColor() != selectedPiece.getTeamColor()) {
                         enemyPiece = game_board.getPiece(each_move.getEndPosition());
                         enemyHere = true;
                     }
                 }
 
                 // Add a move the piece to the new position on the board
-                temp_board.addPiece(each_move.getEndPosition(), new ChessPiece(selected_piece.getTeamColor(), selected_piece.getPieceType()));
+                tempBoard.addPiece(each_move.getEndPosition(), new ChessPiece(selectedPiece.getTeamColor(), selectedPiece.getPieceType()));
 
                 // Add a null piece to the previous position
-                temp_board.addPiece(each_move.getStartPosition(), null);
+                tempBoard.addPiece(each_move.getStartPosition(), null);
 
-//                System.out.println("Is " + selected_piece.getTeamColor() + " in check after " + selected_piece.getTeamColor() + " " +
-//                        selected_piece.getPieceType() + " moves from " + each_move.getStartPosition() + " to " + each_move.getEndPosition());
                 // Make sure that move doesn't leave the king in check
-                if (isInCheck(selected_piece.getTeamColor())) {
+                if (isInCheck(selectedPiece.getTeamColor())) {
                     // Undo previous move
                     // Add a move the piece to the new position on the board
-                    temp_board.addPiece(each_move.getEndPosition(), null);
+                    tempBoard.addPiece(each_move.getEndPosition(), null);
 
                     // Add a null piece to the previous position
-                    temp_board.addPiece(each_move.getStartPosition(), new ChessPiece(selected_piece.getTeamColor(), selected_piece.getPieceType()));
+                    tempBoard.addPiece(each_move.getStartPosition(), new ChessPiece(selectedPiece.getTeamColor(), selectedPiece.getPieceType()));
                 }
                 else {
                     // Undo previous move
                     // Add a move the piece to the new position on the board
                     if (enemyHere) {
-                        temp_board.addPiece(each_move.getEndPosition(), enemyPiece);
+                        tempBoard.addPiece(each_move.getEndPosition(), enemyPiece);
                         enemyHere = false;
                     } else {
-                        temp_board.addPiece(each_move.getEndPosition(), null);
+                        tempBoard.addPiece(each_move.getEndPosition(), null);
                     }
 
                     // Add a null piece to the previous position
-                    temp_board.addPiece(each_move.getStartPosition(), new ChessPiece(selected_piece.getTeamColor(), selected_piece.getPieceType()));
+                    tempBoard.addPiece(each_move.getStartPosition(), new ChessPiece(selectedPiece.getTeamColor(), selectedPiece.getPieceType()));
 
                     // Add the valid move to the Collection
-//                    System.out.println("Valid Move Added: " + each_move.getStartPosition() + "; " + each_move.getEndPosition());
-//                    System.out.println();
-                    valid_moves.add(each_move);
+                    validMoves.add(each_move);
                 }
             }
         }
-        if (!valid_moves.isEmpty()) {
-            return valid_moves;
+        if (!validMoves.isEmpty()) {
+            return validMoves;
         }
 
         // If there is no piece there, return null
-        return valid_moves;
+        return validMoves;
     }
 
     /**
