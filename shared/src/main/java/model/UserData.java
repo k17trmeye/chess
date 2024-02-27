@@ -36,10 +36,6 @@ public class UserData {
         loggedIn = true;
     }
 
-    public void setLoggedOut() {
-        loggedIn = false;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
