@@ -46,14 +46,14 @@ public class MoveCalculator {
     public ArrayList<ChessMove> queenMoveCalculator(ChessBoard board, ChessGame.TeamColor teamColor,
                                                     ChessPosition myPosition) {
         BishopMove bishopMove = new BishopMove();
-        ArrayList<ChessMove> queenMoves_1 =  bishopMove.bishopMoveCal(board, row, col, teamColor, myPosition);
+        ArrayList<ChessMove> queenMoves1 =  bishopMove.bishopMoveCal(board, row, col, teamColor, myPosition);
 
         RookMove rookMove = new RookMove();
-        ArrayList<ChessMove> queenMoves_2 =  rookMove.rookMoveCal(board, row, col, teamColor, myPosition);
+        ArrayList<ChessMove> queenMoves2 =  rookMove.rookMoveCal(board, row, col, teamColor, myPosition);
 
-        queenMoves_1.addAll(queenMoves_2);
+        queenMoves1.addAll(queenMoves2);
 
-        return queenMoves_1;
+        return queenMoves1;
     }
 
 }
