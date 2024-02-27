@@ -312,16 +312,16 @@ public class ChessGame {
         }
 
         // Find what moves the King can make
-        Collection<ChessMove> king_moves = null;
+        Collection<ChessMove> kingMoves = null;
         if(kingPiece.getPieceType() == ChessPiece.PieceType.KING) {
-            king_moves = kingPiece.pieceMoves(chessBoard, new ChessPosition(myRow, myCol));
+            kingMoves = kingPiece.pieceMoves(chessBoard, new ChessPosition(myRow, myCol));
         }
 
-        // Makes a move for each move in king_moves and checks if he is inCheck
+        // Makes a move for each move in kingMoves and checks if he is inCheck
         int counter = 0;
-        if ((king_moves != null) && (!king_moves.isEmpty())) {
-//            System.out.println(king_moves.size());
-            for (ChessMove myMove : king_moves) {
+        if ((kingMoves != null) && (!kingMoves.isEmpty())) {
+//            System.out.println(kingMoves.size());
+            for (ChessMove myMove : kingMoves) {
                 // Add a move the piece to the new position on the board
                 chessBoard.addPiece(myMove.getEndPosition(), new ChessPiece(getTeamTurn(), ChessPiece.PieceType.KING));
 
@@ -346,7 +346,7 @@ public class ChessGame {
         }
 
         // If he cannot make moves, return false
-        if (king_moves.size() == counter) {
+        if (kingMoves.size() == counter) {
             return true;
         }
         // If he can make moves, return true
@@ -365,7 +365,7 @@ public class ChessGame {
     public boolean isInStalemate(TeamColor teamColor) {
         // Variable to hold the King piece and temp piece
         Collection<ChessMove> myMoves = null;
-        ChessPiece my_piece = null;
+        ChessPiece myPiece = null;
         ChessPiece tempPiece;
         int myRow = 0;
         int myCol = 0;
@@ -378,8 +378,8 @@ public class ChessGame {
                 // If the piece is the same color as teamColor, assign it to tempPiece
                 if (tempPiece != null) {
                     if (tempPiece.getTeamColor() == teamColor) {
-                        my_piece = tempPiece;
-                        myMoves = my_piece.pieceMoves(chessBoard, new ChessPosition(i, j));
+                        myPiece = tempPiece;
+                        myMoves = myPiece.pieceMoves(chessBoard, new ChessPosition(i, j));
                     }
                 }
             }
