@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.JsonArray;
-import dataAccess.*;
+import dataaccess.*;
 import model.*;
 import spark.*;
 import service.*;
@@ -11,40 +11,33 @@ import java.util.List;
 
 public class Server {
     private final Services services;
-
     public Server() {
         services = new Services(new MemoryDataAccess());
     }
-
     public int run(int desiredPort) {
         Spark.port(desiredPort);
-
         Spark.staticFiles.location("web");
-
-        Spark.delete("/db", this::ClearGames);
+        Spark.delete("/db", this::ClearAll);
         Spark.post("/user", this::RegisterUser);
         Spark.post("/session", this::LoginUser);
         Spark.delete("/session", this::LogOutUser);
         Spark.get("/game", this::ListGames);
         Spark.post("/game", this::CreateGame);
         Spark.put("/game", this::JoinGame);
-
         Spark.awaitInitialization();
         return Spark.port();
     }
-
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
     }
-
-    private Object ClearGames (Request req, Response res) throws DataAccessException {
+    public Object ClearAll(Request req, Response res) throws DataAccessException {
         services.clear();
         res.status(200);
         return "{}";
     }
 
-    private Object RegisterUser (Request req, Response res) throws DataAccessException {
+    public Object RegisterUser (Request req, Response res) throws DataAccessException {
         var user = new Gson().fromJson(req.body(), UserData.class);
         String username = services.getUser(user.getUsername());
         JsonObject jsonObject = new JsonObject();
@@ -72,7 +65,7 @@ public class Server {
         return json;
     }
 
-    private Object LoginUser (Request req, Response res) throws DataAccessException {
+    public Object LoginUser (Request req, Response res) throws DataAccessException {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
         String username = jsonObject.get("username").getAsString();
         String password = jsonObject.get("password").getAsString();
@@ -109,7 +102,7 @@ public class Server {
         }
     }
 
-    private Object LogOutUser (Request req, Response res) throws DataAccessException {
+    public Object LogOutUser (Request req, Response res) throws DataAccessException {
         String authToken = req.headers("Authorization");
         String username = services.getUsername(authToken);
         String json;
@@ -134,7 +127,7 @@ public class Server {
         return json;
     }
 
-    private Object ListGames (Request req, Response res) throws DataAccessException {
+    public Object ListGames (Request req, Response res) throws DataAccessException {
         String authToken = req.headers("Authorization");
         String username = services.getUsername(authToken);
         JsonObject jsonObject = new JsonObject();
@@ -177,7 +170,7 @@ public class Server {
         return json;
     }
 
-    private Object CreateGame (Request req, Response res) throws DataAccessException {
+    public Object CreateGame (Request req, Response res) throws DataAccessException {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
 
         String json;
@@ -230,7 +223,7 @@ public class Server {
 
 
 
-    private Object JoinGame (Request req, Response res) throws DataAccessException {
+    public Object JoinGame (Request req, Response res) throws DataAccessException {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
         String json;
         Gson gson = new Gson();

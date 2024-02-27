@@ -1,5 +1,4 @@
-package dataAccess;
-
+package dataaccess;
 import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
@@ -10,16 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class MemoryDataAccess implements DataAccess{
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // UserData functions
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private final List<UserData> DB_UserData = new ArrayList<>();
-
-    @Override
-    public List<UserData> getUserData() {
-        return DB_UserData;
-    }
-
     @Override
     public void clearUserData() {
         DB_UserData.clear();
@@ -53,15 +43,6 @@ public class MemoryDataAccess implements DataAccess{
         return null;
     }
     @Override
-    public boolean returnLoginStatus(String username) {
-        for (UserData userData : DB_UserData) {
-            if (userData.getUsername().equals(username)) {
-                return userData.getLoggedIn();
-            }
-        }
-        return false;
-    }
-    @Override
     public void setLoggedIn(String username) {
         for (UserData userData : DB_UserData) {
             if (userData.getUsername().equals(username)) {
@@ -71,96 +52,30 @@ public class MemoryDataAccess implements DataAccess{
             }
         }
     }
-    @Override
-    public boolean setLoggedOut(String username) {
-        for (UserData userData : DB_UserData) {
-            if (userData.getUsername().equals(username)) {
-                if (!userData.getLoggedIn()) {
-                    userData.setLoggedOut();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // AuthData functions
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
     private final List<AuthData> DB_AuthData = new ArrayList<>();
-
-    @Override
-    public List<AuthData> getAuthData() {
-        return DB_AuthData;
-    }
     @Override
     public void clearAuthData(){
         DB_AuthData.clear();
     }
     @Override
     public AuthData createAuth (String username) {
-        // Create a random 12 character string for the authToken
-        StringBuilder sb;
-        boolean valid = false;
-        while (true) {
-            int length = 12;
-            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
-            sb = new StringBuilder(length);
-            for (int i = 0; i < length; i++) {
-                int index = random.nextInt(characters.length());
-                sb.append(characters.charAt(index));
-            }
-
-            for (AuthData authData : DB_AuthData) {
-                if (sb.toString().equals(authData.getAuthToken())) {
-                    valid = true;
-                }
-            }
-
-            if (!valid) {
-                break;
-            }
-        }
         // Create a new AuthData
-        AuthData newAuthData = new AuthData(username, sb.toString());
-
+        String authToken = newAuthToken();
+        AuthData newAuthData = new AuthData(username, authToken);
         // Add new AuthData to DataBase
         DB_AuthData.add(newAuthData);
-
         // Return the authToken
         return newAuthData;
     }
     @Override
     public String getAuthToken (String username) {
-        StringBuilder sb;
-        boolean valid = false;
-        while (true) {
-            int length = 12;
-            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
-            sb = new StringBuilder(length);
-            for (int i = 0; i < length; i++) {
-                int index = random.nextInt(characters.length());
-                sb.append(characters.charAt(index));
-            }
-
-            for (AuthData authData : DB_AuthData) {
-                if (sb.toString().equals(authData.getAuthToken())) {
-                    valid = true;
-                }
-            }
-
-            if (!valid) {
-                break;
-            }
-        }
         // Create a new AuthData
-        AuthData newAuthData = new AuthData(username, sb.toString());
-
+        String authToken = newAuthToken();
+        AuthData newAuthData = new AuthData(username, authToken);
         // Add new AuthData to DataBase
         DB_AuthData.add(newAuthData);
-        return sb.toString();
+        return authToken;
     }
     @Override
     public String getUsername (String authToken) {
@@ -181,15 +96,8 @@ public class MemoryDataAccess implements DataAccess{
         }
         return false;
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    // GameData functions
-    /////////////////////////////////////////////////////////////////////////////////////////////////////
-    private final List<GameData> DB_GameData = new ArrayList<>();;
 
-    @Override
-    public List<GameData> getGameData() {
-        return DB_GameData;
-    }
+    private final List<GameData> DB_GameData = new ArrayList<>();
     @Override
     public void clearGameData(){
         DB_GameData.clear();
@@ -255,5 +163,29 @@ public class MemoryDataAccess implements DataAccess{
             }
         }
         return false;
+    }
+
+    private String newAuthToken() {
+        StringBuilder sb;
+        boolean valid = false;
+        while (true) {
+            int length = 12;
+            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            Random random = new Random();
+            sb = new StringBuilder(length);
+            for (int i = 0; i < length; i++) {
+                int index = random.nextInt(characters.length());
+                sb.append(characters.charAt(index));
+            }
+            for (AuthData authData : DB_AuthData) {
+                if (sb.toString().equals(authData.getAuthToken())) {
+                    valid = true;
+                }
+            }
+            if (!valid) {
+                break;
+            }
+        }
+        return sb.toString();
     }
 }
