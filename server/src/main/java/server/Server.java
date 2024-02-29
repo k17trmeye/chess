@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.JsonArray;
 import dataaccess.*;
+import exception.ResponseException;
 import model.*;
 import spark.*;
 import service.*;
@@ -12,7 +13,12 @@ import java.util.List;
 public class Server {
     private final Services services;
     public Server() {
-        services = new Services(new MemoryDataAccess());
+//        services = new Services(new MemoryDataAccess());
+        try {
+            services = new Services(new MySQLDataAccess());
+        } catch (DataAccessException | ResponseException e) {
+            throw new RuntimeException(e);
+        }
     }
     public int run(int desiredPort) {
         Spark.port(desiredPort);

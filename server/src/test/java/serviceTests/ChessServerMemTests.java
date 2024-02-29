@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ChessServerTests {
+public class ChessServerMemTests {
     private static Services services;
     private static AuthData authData;
     private static AuthData nextAuthData;
