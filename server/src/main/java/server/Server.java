@@ -268,13 +268,10 @@ public class Server {
         Integer gameID = jsonObject.get("gameID").getAsInt();
         String authToken = req.headers("Authorization");
         String userName = services.getUsername(authToken);
-        System.out.println("JoinGame: " + userName + ", " + teamColor);
         if (userName != null) {
             if (gameID.equals(services.getGame(gameID))) {
                 boolean getPlayerColor = services.getPlayerColor(userName, teamColor, gameID);
-                System.out.println("getPlayerColor = " + getPlayerColor);
                 if (getPlayerColor) {
-                    System.out.println("here first");
                     res.status(403);
                     JsonObject newJson = new JsonObject();
                     newJson.addProperty("message", "Error: bad request");
@@ -282,12 +279,10 @@ public class Server {
                     return json;
                 }
                 else if (services.joinGame(userName, teamColor, gameID)) {
-                    System.out.println("here next");
                     res.status(200);
                     return "{}";
                 }
                 else {
-                    System.out.println("here");
                     res.status(403);
                     JsonObject newJson = new JsonObject();
                     newJson.addProperty("message", "Error: bad request");

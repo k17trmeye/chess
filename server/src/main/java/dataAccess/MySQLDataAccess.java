@@ -434,7 +434,6 @@ public class MySQLDataAccess implements DataAccess{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("getPlayerUsername: " + username);
         return username;
     }
 }
