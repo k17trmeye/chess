@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.JsonArray;
-import dataaccess.*;
+import dataAccess.*;
 import exception.ResponseException;
 import model.*;
 import spark.*;
@@ -87,7 +87,6 @@ public class Server {
         }
         else if (username != null) {
             if (services.checkPassword(username, password)) {
-                services.setLoggedIn(username);
                 res.status(200);
                 AuthData authData = new AuthData(username, services.getToken(username));
                 json = gson.toJson(authData);
@@ -272,6 +271,7 @@ public class Server {
         String userName = services.getUsername(authToken);
         if (userName != null) {
             if (gameID.equals(services.getGame(gameID))) {
+                System.out.println(userName + ", " + teamColor + ", " + gameID);
                 if (services.getPlayerColor(userName, teamColor, gameID)) {
                     res.status(403);
                     JsonObject newJson = new JsonObject();

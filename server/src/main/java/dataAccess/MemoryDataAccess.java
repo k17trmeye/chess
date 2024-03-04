@@ -1,4 +1,4 @@
-package dataaccess;
+package dataAccess;
 import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
@@ -6,6 +6,7 @@ import model.UserData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class MemoryDataAccess implements DataAccess{
@@ -26,7 +27,7 @@ public class MemoryDataAccess implements DataAccess{
     @Override
     public String createUser(String userName, String password, String email) {
         // Create a new user
-        UserData newUser = new UserData(userName, password, email, false);
+        UserData newUser = new UserData(userName, password, email);
 
         // Add the new user to the database
         dbUserdata.add(newUser);
@@ -41,16 +42,6 @@ public class MemoryDataAccess implements DataAccess{
             }
         }
         return null;
-    }
-    @Override
-    public void setLoggedIn(String username) {
-        for (UserData userData : dbUserdata) {
-            if (userData.getUsername().equals(username)) {
-                if (!userData.getLoggedIn()) {
-                    userData.setLoggedIn();
-                }
-            }
-        }
     }
 
     private final List<AuthData> dbAuthdata = new ArrayList<>();
@@ -146,19 +137,24 @@ public class MemoryDataAccess implements DataAccess{
         return false;
     }
 
-    @Override
     public boolean getPlayerColor(String username, String playerColor, Integer gameID) {
         for (GameData eachGame : dbGamedata) {
             if (eachGame.getGameID().equals(gameID)) {
+                System.out.println(Objects.equals(playerColor, "WHITE"));
+                System.out.println(playerColor == "WHITE");
                 if (playerColor == "BLACK") {
                     if (eachGame.getBlackUsername() == null) {
                         return true;
                     }
                 }
                 else if (playerColor == "WHITE") {
+                    System.out.println(eachGame.getWhiteUsername());
                     if (eachGame.getWhiteUsername() == null) {
                         return true;
                     }
+                }
+                else {
+                    System.out.println("nothing");
                 }
             }
         }

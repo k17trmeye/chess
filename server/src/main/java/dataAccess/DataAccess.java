@@ -1,4 +1,4 @@
-package dataaccess;
+package dataAccess;
 
 import model.*;
 
@@ -22,5 +22,4 @@ public interface DataAccess {
     String checkUserName(String userName) throws DataAccessException;
     String createUser(String userName, String password, String email) throws DataAccessException;
     String getPassword(String username) throws DataAccessException;
-    void setLoggedIn(String username) throws DataAccessException;
 }

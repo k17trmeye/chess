@@ -1,6 +1,6 @@
 package service;
 
-import dataaccess.*;
+import dataAccess.*;
 import model.AuthData;
 import model.GameData;
 
@@ -42,9 +42,6 @@ public class Services {
     }
     public Integer createGame(String gameName) throws DataAccessException{
         return dataAccess.createGame(gameName);
-    }
-    public void setLoggedIn(String userName) throws DataAccessException{
-        dataAccess.setLoggedIn(userName);
     }
     public Integer getGame(Integer gameID) throws DataAccessException {
         return dataAccess.getGame(gameID);

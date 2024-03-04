@@ -9,11 +9,10 @@ public class UserData {
 
     private static boolean loggedIn;
 
-    public UserData(String username, String password, String email, boolean loggedIn) {
+    public UserData(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-        UserData.loggedIn = loggedIn;
     }
 
     public String getUsername() {
@@ -28,13 +27,6 @@ public class UserData {
         return email;
     }
 
-    public boolean getLoggedIn() {
-        return loggedIn;
-    }
-
-    public void setLoggedIn() {
-        loggedIn = true;
-    }
 
     @Override
     public boolean equals(Object o) {

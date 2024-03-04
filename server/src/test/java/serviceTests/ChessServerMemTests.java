@@ -1,6 +1,6 @@
 package serviceTests;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryDataAccess;
+import dataAccess.DataAccessException;
+import dataAccess.MemoryDataAccess;
 import model.*;
 import org.junit.jupiter.api.*;
 import passoffTests.testClasses.TestException;
