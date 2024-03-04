@@ -331,23 +331,21 @@ public class MySQLDataAccess implements DataAccess{
     private final String[] createAuthDB = {
             """
             CREATE TABLE IF NOT EXISTS authData (
-               `id` int NOT NULL AUTO_INCREMENT,
                `username` varchar(256) NOT NULL,
                `authToken` varchar(256) NOT NULL,
                `json` TEXT DEFAULT NULL,
-               PRIMARY KEY (`id`)
+               PRIMARY KEY (`authToken`)
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
     private final String[] createUserDB = {
             """
             CREATE TABLE IF NOT EXISTS userData (
-               `id` int NOT NULL AUTO_INCREMENT,
                `username` varchar(256) NOT NULL,
                `password` varchar(256) NOT NULL,
                `email` varchar(256) NOT NULL,
                `json` TEXT DEFAULT NULL,
-               PRIMARY KEY (`id`)
+               PRIMARY KEY (`username`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
             """
     };
@@ -355,7 +353,7 @@ public class MySQLDataAccess implements DataAccess{
     private void configureDatabase() throws ResponseException, DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            // Used to clear DB
+////             Used to clear DB
 //            var newStatement = "DROP TABLE IF EXISTS gameData";
 //            try (var preparedStatement = conn.prepareStatement(newStatement)) {
 //                preparedStatement.executeUpdate();
