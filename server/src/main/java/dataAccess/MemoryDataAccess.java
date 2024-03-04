@@ -140,21 +140,15 @@ public class MemoryDataAccess implements DataAccess{
     public boolean getPlayerColor(String username, String playerColor, Integer gameID) {
         for (GameData eachGame : dbGamedata) {
             if (eachGame.getGameID().equals(gameID)) {
-                System.out.println(Objects.equals(playerColor, "WHITE"));
-                System.out.println(playerColor == "WHITE");
                 if (playerColor == "BLACK") {
                     if (eachGame.getBlackUsername() == null) {
                         return true;
                     }
                 }
                 else if (playerColor == "WHITE") {
-                    System.out.println(eachGame.getWhiteUsername());
                     if (eachGame.getWhiteUsername() == null) {
                         return true;
                     }
-                }
-                else {
-                    System.out.println("nothing");
                 }
             }
         }

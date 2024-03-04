@@ -193,23 +193,20 @@ public class MySQLDataAccess implements DataAccess{
     public boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement = null;
-            if (Objects.equals(playerColor, "BLACK")) {
+            if (Objects.equals(playerColor, "BLACK") && getPlayerUsername(playerColor, gameID) == null) {
                 statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
-            } else if (Objects.equals(playerColor, "WHITE")){
+            } else if (Objects.equals(playerColor, "WHITE")) {
                 statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
-            }
-            try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setString(1, username);
-                ps.setInt(2, gameID);
-                System.out.println("joinGame: " + ps);
-                ps.executeUpdate();
             }
             if (statement == null) {
                 return false;
             }
-            else {
-                return true;
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setString(1, username);
+                ps.setInt(2, gameID);
+                ps.executeUpdate();
             }
+            return statement != null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -217,38 +214,29 @@ public class MySQLDataAccess implements DataAccess{
 
     @Override
     public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
         try (var conn = DatabaseManager.getConnection()) {
-            String statement = null;
-            if (Objects.equals(playerColor, "BLACK")) {
-                statement = "SELECT blackUsername FROM gameData WHERE gameID = ?";
-            } else if (Objects.equals(playerColor, "WHITE")){
-                statement = "SELECT whiteUsername FROM gameData WHERE gameID = ?";
-            }
-            try (PreparedStatement ps = conn.prepareStatement(statement)) {
-                ps.setInt(1, gameID);
-                System.out.println("getPlayerColor: " + ps);
-                String newUsername;
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        System.out.println(playerColor);
-                        if (playerColor == "WHITE") {
-                            newUsername = rs.getString("whiteUsername");
-                            System.out.println(newUsername);
-                            if (newUsername == null) {
-                                return true;
-                            }
-                        } else if (playerColor == "BLACK" || Objects.equals(playerColor, "BLACK")) {
-                            System.out.println("here");
-                            newUsername = rs.getString("blackUsername");
-                            System.out.println(newUsername);
-                            if (newUsername == null) {
-                                return true;
-                            }
-                        }
-                    }
+            String query = "SELECT * FROM gameData WHERE gameID = ?";
+            preparedStatement = conn.prepareStatement(query);
+            preparedStatement.setInt(1, gameID);
+
+            // Execute query
+            resultSet = preparedStatement.executeQuery();
+
+            // Process result set
+            while (resultSet.next()) {
+                String blackUsername = resultSet.getString("blackUsername");
+                String whiteUsername = resultSet.getString("whiteUsername");
+
+                if ((playerColor == "BLACK") && blackUsername == null) {
+                    return true;
+                } else if ((playerColor == "WHITE") && whiteUsername == null) {
+                    return true;
                 }
-                return false;
             }
+            return false;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -327,7 +315,7 @@ public class MySQLDataAccess implements DataAccess{
 
     private final String[] createGameDB = {
             """
-            CREATE TABLE IF NOT EXISTS  gameData (
+            CREATE TABLE IF NOT EXISTS gameData (
                `id` int NOT NULL AUTO_INCREMENT,
                `gameID` int NOT NULL,
                `whiteUsername` varchar(256) DEFAULT NULL,
@@ -342,7 +330,7 @@ public class MySQLDataAccess implements DataAccess{
 
     private final String[] createAuthDB = {
             """
-            CREATE TABLE IF NOT EXISTS  authData (
+            CREATE TABLE IF NOT EXISTS authData (
                `id` int NOT NULL AUTO_INCREMENT,
                `username` varchar(256) NOT NULL,
                `authToken` varchar(256) NOT NULL,
@@ -353,7 +341,7 @@ public class MySQLDataAccess implements DataAccess{
     };
     private final String[] createUserDB = {
             """
-            CREATE TABLE IF NOT EXISTS  userData (
+            CREATE TABLE IF NOT EXISTS userData (
                `id` int NOT NULL AUTO_INCREMENT,
                `username` varchar(256) NOT NULL,
                `password` varchar(256) NOT NULL,
@@ -420,5 +408,33 @@ public class MySQLDataAccess implements DataAccess{
         // Create a random 4 digit int for the gameID
         Random random = new Random();
         return random.nextInt(9000) + 1000;
+    }
+
+    private String getPlayerUsername(String playerColor, Integer gameID) throws DataAccessException{
+        String username = null;
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = null;
+            String query = null;
+            if (Objects.equals(playerColor, "BLACK")) {
+                statement = "SELECT blackUsername FROM gameData WHERE gameID = ?";
+                query = "blackUsername";
+            }
+            else if (playerColor == "WHITE") {
+                statement = "SELECT whiteUsername FROM gameData WHERE gameID = ?";
+                query = "whiteUsername";
+            }
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        username =  rs.getString(query);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("getPlayerUsername: " + username);
+        return username;
     }
 }

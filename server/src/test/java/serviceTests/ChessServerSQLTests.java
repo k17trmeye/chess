@@ -178,11 +178,11 @@ public class ChessServerSQLTests {
         // Valid Test
         Integer gameID = services.createGame("game");
         services.joinGame("existingUser", "BLACK", gameID);
-        boolean playerColor = services.getPlayerColor( "existingUser", "BLACK", gameID);
+        boolean playerColor = services.getPlayerColor("existingUser", "BLACK", gameID);
         assertFalse(playerColor, "Error getting player color");
 
         // Invalid Test
-        playerColor = services.getPlayerColor( "existingUser", "WHITE", gameID);
+        playerColor = services.getPlayerColor("existingUser", "WHITE", gameID);
         assertTrue(playerColor, "Invalid player color");
     }
 }
