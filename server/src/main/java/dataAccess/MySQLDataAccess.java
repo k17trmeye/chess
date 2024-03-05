@@ -7,7 +7,6 @@ import model.GameData;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import exception.ResponseException;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -17,7 +16,7 @@ import com.google.gson.Gson;
 
 public class MySQLDataAccess implements DataAccess{
 
-    public MySQLDataAccess() throws DataAccessException, ResponseException {
+    public MySQLDataAccess() throws DataAccessException {
         configureDatabase();
     }
 
@@ -95,11 +94,7 @@ public class MySQLDataAccess implements DataAccess{
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.setString(1, authToken);
                     preparedStatement.executeUpdate();
-                    if (getUsername(authToken) == null) {
-                        return true;
-                    } else {
-                        return false;
-                    }
+                    return getUsername(authToken) == null;
                 }
 
             } catch (SQLException e) {
@@ -206,7 +201,7 @@ public class MySQLDataAccess implements DataAccess{
                 ps.setInt(2, gameID);
                 ps.executeUpdate();
             }
-            return statement != null;
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -214,8 +209,8 @@ public class MySQLDataAccess implements DataAccess{
 
     @Override
     public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException {
-        PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
+        PreparedStatement preparedStatement;
+        ResultSet resultSet;
 
         try (var conn = DatabaseManager.getConnection()) {
             String query = "SELECT * FROM gameData WHERE gameID = ?";
@@ -256,7 +251,7 @@ public class MySQLDataAccess implements DataAccess{
 
     @Override
     public String checkUserName(String userName) throws DataAccessException {
-        String newUserName = null;
+        String newUserName;
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT username FROM userData WHERE username = ?";
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
@@ -350,7 +345,7 @@ public class MySQLDataAccess implements DataAccess{
             """
     };
 
-    private void configureDatabase() throws ResponseException, DataAccessException {
+    private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
 ////             Used to clear DB
@@ -384,10 +379,10 @@ public class MySQLDataAccess implements DataAccess{
                 }
             }
         } catch (SQLException ex) {
-            throw new ResponseException(500, String.format("Unable to configure database: %s", ex.getMessage()));
+            throw new RuntimeException(ex);
         }
     }
-    private String newAuthToken() throws DataAccessException {
+    private String newAuthToken() {
         StringBuilder sb;
 
         int length = 12;

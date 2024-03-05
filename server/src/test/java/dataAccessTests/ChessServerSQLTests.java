@@ -2,7 +2,6 @@ package dataAccessTests;
 
 import dataAccess.DataAccessException;
 import dataAccess.MySQLDataAccess;
-import exception.ResponseException;
 import model.AuthData;
 import model.GameData;
 import org.junit.jupiter.api.*;
@@ -20,7 +19,7 @@ public class ChessServerSQLTests {
     private static AuthData authData;
     private static AuthData nextAuthData;
     @BeforeAll
-    public static void init() throws DataAccessException, ResponseException {
+    public static void init() throws DataAccessException {
         services = new Services(new MySQLDataAccess());
     }
     @BeforeEach

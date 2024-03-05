@@ -2,7 +2,6 @@ package server;
 
 import com.google.gson.JsonArray;
 import dataAccess.*;
-import exception.ResponseException;
 import model.*;
 import spark.*;
 import service.*;
@@ -16,7 +15,7 @@ public class Server {
 //        services = new Services(new MemoryDataAccess());
         try {
             services = new Services(new MySQLDataAccess());
-        } catch (DataAccessException | ResponseException e) {
+        } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
     }
@@ -143,15 +142,7 @@ public class Server {
             allGames = services.listGames();
             if (!allGames.isEmpty()) {
                 res.status(200);
-                JsonArray jsonArray = new JsonArray();
-                for (GameData gameData : allGames) {
-                    JsonObject obj1 = new JsonObject();
-                    obj1.addProperty("gameID", gameData.getGameID());
-                    obj1.addProperty("whiteUsername", gameData.getWhiteUsername());
-                    obj1.addProperty("blackUsername", gameData.getBlackUsername());
-                    obj1.addProperty("gameName", gameData.getGameName());
-                    jsonArray.add(obj1);
-                }
+                JsonArray jsonArray = getJsonElements(allGames);
                 jsonObject.add("games", jsonArray);
                 json = gson.toJson(jsonObject);
             }
@@ -173,6 +164,19 @@ public class Server {
 
 
         return json;
+    }
+
+    private static JsonArray getJsonElements(List<GameData> allGames) {
+        JsonArray jsonArray = new JsonArray();
+        for (GameData gameData : allGames) {
+            JsonObject obj1 = new JsonObject();
+            obj1.addProperty("gameID", gameData.getGameID());
+            obj1.addProperty("whiteUsername", gameData.getWhiteUsername());
+            obj1.addProperty("blackUsername", gameData.getBlackUsername());
+            obj1.addProperty("gameName", gameData.getGameName());
+            jsonArray.add(obj1);
+        }
+        return jsonArray;
     }
 
     public Object createGame (Request req, Response res) throws DataAccessException {
@@ -247,8 +251,6 @@ public class Server {
             if (userName == null) {
                 res.status(401);
                 newJson.addProperty("message", "Error: unauthorized");
-                json = gson.toJson(newJson);
-                return json;
             }
             else {
                 Integer game = services.getGame(jsonObject.get("gameID").getAsInt());
@@ -259,9 +261,9 @@ public class Server {
                     res.status(400);
                     newJson.addProperty("message", "Error: bad request");
                 }
-                json = gson.toJson(newJson);
-                return json;
             }
+            json = gson.toJson(newJson);
+            return json;
         }
 
         String teamColor = jsonObject.get("playerColor").getAsString();

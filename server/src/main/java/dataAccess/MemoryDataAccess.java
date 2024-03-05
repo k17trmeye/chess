@@ -157,7 +157,7 @@ public class MemoryDataAccess implements DataAccess{
     private String newAuthToken() {
         StringBuilder sb;
         boolean valid = false;
-        while (true) {
+        do {
             int length = 12;
             String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             Random random = new Random();
@@ -169,12 +169,10 @@ public class MemoryDataAccess implements DataAccess{
             for (AuthData authData : dbAuthdata) {
                 if (sb.toString().equals(authData.getAuthToken())) {
                     valid = true;
+                    break;
                 }
             }
-            if (!valid) {
-                break;
-            }
-        }
+        } while (valid);
         return sb.toString();
     }
 }
