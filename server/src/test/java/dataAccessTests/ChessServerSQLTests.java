@@ -18,6 +18,7 @@ public class ChessServerSQLTests {
     private static Services services;
     private static AuthData authData;
     private static AuthData nextAuthData;
+    private static Integer gameID;
     @BeforeAll
     public static void init() throws DataAccessException {
         services = new Services(new MySQLDataAccess());
@@ -28,6 +29,7 @@ public class ChessServerSQLTests {
         services.createUser("nextUser", "nextPassword", "next@email.com");
         authData = services.createAuth("existingUser");
         nextAuthData = services.createAuth("nextUser");
+        gameID = services.createGame("existingGame");
     }
     @AfterEach
     public void reset_test() throws DataAccessException {
@@ -36,6 +38,30 @@ public class ChessServerSQLTests {
     @AfterAll
     static void stopServer() throws DataAccessException{
         System.out.println("All tests passed");
+    }
+
+    @Test
+    public void clearAuthDataTest() throws DataAccessException{
+        // Valid Test
+        services.clear();
+        String test = services.getToken("existingUser");
+        assertNotNull(test, "Error clearing authData");
+    }
+
+    @Test
+    public void clearGameDataTest() throws DataAccessException{
+        // Valid Test
+        services.clear();
+        Integer game = services.getGame(gameID);
+        assertEquals(game, 0, "Error clearing gameData");
+    }
+
+    @Test
+    public void clearUserDataTest() throws DataAccessException{
+        // Valid Test
+        services.clear();
+        String username = services.getUsername("existingUser");
+        assertNull(username, "Error clearing UserData");
     }
 
     @Test
