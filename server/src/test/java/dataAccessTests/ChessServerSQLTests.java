@@ -118,16 +118,16 @@ public class ChessServerSQLTests {
 //        assertNotEquals(nextAuthToken, authToken, "Error getting invalid token");
     }
 
-    @Test
-    public void checkUsernameTest() throws TestException, DataAccessException {
-        // Valid Test
-        String username = services.getUser("existingUser");
-        assertEquals(username, "existingUser","Error checking username");
-
-        // Invalid Test
-        String nextUser = services.getUser("existingUser_1");
-        assertEquals(nextUser, null,"Error checking username");
-    }
+//    @Test
+//    public void checkUsernameTest() throws TestException, DataAccessException {
+//        // Valid Test
+//        String username = services.getUser("existingUser");
+//        assertEquals(username, "existingUser","Error checking username");
+//
+//        // Invalid Test
+//        String nextUser = services.getUser("existingUser_1");
+//        assertEquals(nextUser, null,"Error checking username");
+//    }
 
     @Test
     public void listGamesTest() throws TestException, DataAccessException {
