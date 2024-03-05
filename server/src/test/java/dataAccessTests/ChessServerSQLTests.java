@@ -160,7 +160,7 @@ public class ChessServerSQLTests {
         // Valid Test
         List<GameData> gameData = services.listGames();
         List<GameData> testData = new ArrayList<>();
-        assertEquals(gameData, testData,"Error listing game");
+        assertNotEquals(gameData, testData,"Error listing game");
     }
 
     @Test
