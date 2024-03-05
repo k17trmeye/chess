@@ -45,8 +45,8 @@ public class ChessServerSQLTests {
         Assertions.assertTrue(result.contains("trace"), "Error creating user");
 
 //         Invalid test
-//        result = services.createUser("existingUser", "existingPassword", "existing@email.com");
-//        Assertions.assertTrue(result, "Error creating invalid user");
+        result = services.createUser("existingUser", "existingPassword", "existing@email.com");
+        Assertions.assertFalse(result.contains("trace"), "Error creating user");
     }
 
     @Test
@@ -63,15 +63,15 @@ public class ChessServerSQLTests {
 
     @Test
     public void getUsernameTest() throws TestException, DataAccessException {
-//        // Valid Test
-//        String authToken = services.getToken("existingUser");
-//        String username = services.getUsername(authToken);
-//        assertEquals("existingUser", username, "Error getting username");
-//
-//        // Invalid Test
-//        String new_authToken = services.getToken("existingUser_1");
-//        username = services.getUsername(new_authToken);
-//        assertNotEquals("existingUser", username, "Error getting username");
+        // Valid Test
+        String authToken = services.getToken("existingUser");
+        String username = services.getUsername(authToken);
+        assertEquals("existingUser", username, "Error getting username");
+
+        // Invalid Test
+        String new_authToken = services.getToken("existingUser_1");
+        username = services.getUsername(new_authToken);
+        assertNotEquals("existingUser", username, "Error getting username");
     }
     @Test
     public void deleteAuthTest() throws TestException, DataAccessException {
@@ -87,24 +87,24 @@ public class ChessServerSQLTests {
 
     @Test
     public void checkPasswordTest() throws TestException, DataAccessException {
-//        // Valid Test
-//        boolean test = services.checkPassword("existingUser","existingPassword");
-//        assertTrue(test, "Error checking password");
-//
-//        // Invalid Test
-//        test = services.checkPassword("existingUser", "existingPassword_1");
-//        assertNotEquals(true, test, "Error checking invalid password");
+        // Valid Test
+        boolean test = services.checkPassword("existingUser","existingPassword");
+        assertTrue(test, "Error checking password");
+
+        // Invalid Test
+        test = services.checkPassword("existingUser", "existingPassword_1");
+        assertNotEquals(true, test, "Error checking invalid password");
     }
 
     @Test
     public void getUserTest() throws TestException, DataAccessException {
-//        // Valid Test
-//        boolean test = services.checkPassword("existingUser","existingPassword");
-//        assertTrue(test, "Error getting user");
-//
-//        // Invalid Test
-//        test = services.checkPassword("existingUser", "existingPassword_1");
-//        assertNotEquals(true, test, "Error getting invalid user");
+        // Valid Test
+        boolean test = services.checkPassword("existingUser","existingPassword");
+        assertTrue(test, "Error getting user");
+
+        // Invalid Test
+        test = services.checkPassword("existingUser", "existingPassword_1");
+        assertNotEquals(true, test, "Error getting invalid user");
     }
 
     @Test
