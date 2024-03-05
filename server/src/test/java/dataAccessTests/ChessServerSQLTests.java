@@ -210,4 +210,40 @@ public class ChessServerSQLTests {
         playerColor = services.getPlayerColor("existingUser", "WHITE", gameID);
         assertTrue(playerColor, "Invalid player color");
     }
+
+    @Test
+    public void checkPlayerColorTest() throws TestException, DataAccessException {
+        // Valid Test
+        Integer gameID = services.createGame("game");
+        services.joinGame("existingUser", "BLACK", gameID);
+        boolean playerColor = services.getPlayerColor("existingUser", "BLACK", gameID);
+        assertFalse(playerColor, "Error getting player color");
+
+        // Invalid Test
+        playerColor = services.getPlayerColor("existingUser", "WHITE", gameID);
+        assertTrue(playerColor, "Invalid player color");
+    }
+
+    @Test
+    public void queryGameTest() throws TestException, DataAccessException {
+        // Valid Test
+        Integer gameID = services.createGame("gameName");
+        Integer retGameID = services.getGame(gameID);
+        assertEquals(gameID, retGameID, "Error getting game");
+
+        // Invalid Test
+        Integer nextGameID = services.getGame(gameID + 4);
+        assertEquals(nextGameID, 0,"Error not getting game");
+    }
+
+    @Test
+    public void queryUsernameTest() throws TestException, DataAccessException {
+        // Valid Test
+        String username = services.getUser("existingUser");
+        assertNotNull(username,"Error checking username");
+
+        // Invalid Test
+        String nextUser = services.getUser("existingUser_1");
+        assertNull(nextUser, "Error checking username");
+    }
 }
