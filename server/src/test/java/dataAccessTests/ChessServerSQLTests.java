@@ -246,4 +246,15 @@ public class ChessServerSQLTests {
         String nextUser = services.getUser("existingUser_1");
         assertNull(nextUser, "Error checking username");
     }
+
+    @Test
+    public void queryPasswordTest() throws TestException, DataAccessException {
+        // Valid Test
+        boolean test = services.checkPassword("existingUser","existingPassword");
+        assertTrue(test, "Error checking password");
+
+        // Invalid Test
+        test = services.checkPassword("existingUser", "existingPassword_1");
+        assertNotEquals(true, test, "Error checking invalid password");
+    }
 }
