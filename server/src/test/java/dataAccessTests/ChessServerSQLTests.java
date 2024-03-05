@@ -125,8 +125,8 @@ public class ChessServerSQLTests {
         assertEquals(username, "existingUser","Error checking username");
 
         // Invalid Test
-        String nextAuthToken = services.getUser("existingUser_1");
-        assertNull(nextAuthToken, "Error checking invalid username");
+        String nextUser = services.getUser("existingUser_1");
+        assertEquals(nextUser, null,"Error checking username");
     }
 
     @Test
