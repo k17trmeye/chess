@@ -54,8 +54,7 @@ public class ServerFacade {
 
             // Read response body from InputStream
             String responseBodyString = readInputStream(responseBody);
-            // Return null
-            return null;
+            return responseBodyString;
         }
     }
 
@@ -95,8 +94,7 @@ public class ServerFacade {
             // Read response body from InputStream
             String responseBodyString = readInputStream(responseBody);
 
-            // Return null
-            return null;
+            return responseBodyString;
         }
     }
 
@@ -172,9 +170,7 @@ public class ServerFacade {
             String responseBodyString = readInputStream(responseBody);
             JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
             String message = jsonObject.get("message").getAsString();
-            if (message.contains("Error")) {
-                return null;
-            }
+
             return responseBodyString;
         }
     }
@@ -219,9 +215,7 @@ public class ServerFacade {
             String responseBodyString = readInputStream(responseBody);
             JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
             String message = jsonObject.get("message").getAsString();
-            if (message.contains("Error")) {
-                return null;
-            }
+
             return responseBodyString;
         }
     }
@@ -266,9 +260,7 @@ public class ServerFacade {
             String responseBodyString = readInputStream(responseBody);
             JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
             String message = jsonObject.get("message").getAsString();
-            if (message.contains("Error")) {
-                return null;
-            }
+
             return responseBodyString;
         }
     }
