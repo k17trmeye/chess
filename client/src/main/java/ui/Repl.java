@@ -124,7 +124,7 @@ public class Repl {
                 case "create":
                     if (parts.length != 2) {
                         System.out.println("Invalid format. Correct format: create <GAMENAME>\n");
-                        System.out.print("[LOGGED OUT] >>> ");
+                        System.out.print("[LOGGED IN] >>> ");
                         continue; // Prompt user again
                     }
                     String gameName = parts[1];
@@ -153,24 +153,39 @@ public class Repl {
                 case "join":
                     if (parts.length != 3) {
                         System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK|empty>\n");
-                        System.out.print("[LOGGED OUT] >>> ");
+                        System.out.print("[LOGGED IN] >>> ");
                         continue; // Prompt user again
                     }
                     String gameID = parts[1];
                     String playerColor = parts[2];
+
                     var joined = serverFacade.joinGame(authToken, playerColor, gameID);
-                    if (joined != null) {
+                    if (!joined.toString().contains("Error")) {
                         System.out.println("Game Joined");
                         ChessBoardUI.main();
                     }
                     else {
-                        System.out.println("Error joining game" + joined + "\n");
-                        System.out.println(joined);
+                        System.out.println("Error joining game: " + joined + "\n");
                         System.out.print("[LOGGED IN] >>> ");
                     }
                     break;
                 case "observe":
-                    System.out.print("[LOGGED IN] >>> ");
+                    if (parts.length != 2) {
+                        System.out.println("Invalid format. Correct format: observe <GAMEID>\n");
+                        System.out.print("[LOGGED IN] >>> ");
+                        continue; // Prompt user again
+                    }
+                    String observeGameID = parts[1];
+
+                    var observerJoined = serverFacade.joinGame(authToken, "", observeGameID);
+                    if (!observerJoined.toString().contains("Error")) {
+                        System.out.println("Game Observer Joined");
+                        ChessBoardUI.main();
+                    }
+                    else {
+                        System.out.println("Error joining observer game" + observerJoined + "\n");
+                        System.out.print("[LOGGED IN] >>> ");
+                    }
                     break;
                 case "logout":
                     running = false;
