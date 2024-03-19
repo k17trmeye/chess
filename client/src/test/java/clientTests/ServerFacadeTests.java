@@ -41,51 +41,74 @@ public class ServerFacadeTests {
     }
 
     @Test
-    void registerTest() throws Exception {
+    void registerTestPos() throws Exception {
         var authData = facade.registerUser("player1", "password", "p1@email.com");
         assertTrue(authData.toString().contains("player1"), "Error registering user");
-        authData = facade.registerUser("player2", "password2", "p2@email.com");
+    }
+
+    @Test
+    void registerTestNeg() throws Exception {
+        var authData = facade.registerUser("player2", "password2", "p2@email.com");
         assertTrue(authData.toString().contains("Error"), "Error registering already added user");
     }
 
     @Test
-    void loginUserTest() throws Exception {
+    void loginUserTestPos() throws Exception {
         var authData = facade.loginUser("player2", "password2");
         assertNotNull(authData, "Error logging in user");
-        authData = facade.loginUser("player1", "password");
+    }
+
+    @Test
+    void loginUserTestNeg() throws Exception {
+        var authData = facade.loginUser("player1", "password");
         assertTrue(authData.toString().contains("Error"), "Error logging in with invalid user");
     }
 
     @Test
-    void logoutUserTest() throws Exception {
+    void logoutUserTestPos() throws Exception {
         var authData = facade.logoutUser(authToken);
         assertEquals(authData, "{}","Error logging in user");
-        authData = facade.logoutUser("randomToken");
+    }
+
+    @Test
+    void logoutUserTestNeg() throws Exception {
+        var authData = facade.logoutUser("randomToken");
         assertNotNull(authData, "Error logging out with invalid authToken");
     }
 
     @Test
-    void createGameTest() throws Exception {
+    void createGameTestPos() throws Exception {
         var authData = facade.createGame(authToken, "newGame");
         assertNotNull(authData,"Error creating game");
-        authData = facade.createGame("hello", "noGame");
+    }
+
+    @Test
+    void createGameTestNeg() throws Exception {
+        var authData = facade.createGame("hello", "noGame");
         assertTrue(authData.toString().contains("Error"), "Error creating game with invalid authToken");
     }
 
     @Test
-    void joinGameTest() throws Exception {
+    void joinGameTestPos() throws Exception {
         var authData = facade.joinGame(authToken, "BLACK", gameID);
-        System.out.println(authData);
         assertNotNull(authData,"Error joining game");
-        authData = facade.joinGame("hello", "WHITE", gameID);
+    }
+
+    @Test
+    void joinGameTestNeg() throws Exception {
+        var authData = facade.joinGame("hello", "WHITE", gameID);
         assertTrue(authData.toString().contains("Error"), "Error joining game with invalid authToken");
     }
 
     @Test
-    void listGamesTest() throws Exception {
+    void listGamesTestPos() throws Exception {
         var authData = facade.listGames(authToken);
-        assertNotNull(authData,"Error listing games");
-        authData = facade.listGames("randomToken");
+        assertNotNull(authData, "Error listing games");
+    }
+
+    @Test
+    void listGamesTestNeg() throws Exception {
+        var authData = facade.listGames("randomToken");
         assertTrue(authData.toString().contains("Error"), "Error listing games with invalid authToken");
     }
 
