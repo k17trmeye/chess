@@ -141,8 +141,9 @@ public class Repl {
                 case "list":
                     var games = serverFacade.listGames(authToken);
                     if (!games.toString().contains("Error")) {
-                        System.out.println("Games: \n");
+                        System.out.println("Games: ");
                         System.out.println(games);
+                        System.out.println();
                         System.out.print("[LOGGED IN] >>> ");
                     }
                     else {
@@ -163,6 +164,8 @@ public class Repl {
                     if (!joined.toString().contains("Error")) {
                         System.out.println("Game Joined");
                         ChessBoardUI.main();
+                        System.out.println();
+                        System.out.print("[LOGGED IN] >>> ");
                     }
                     else {
                         System.out.println("Error joining game: " + joined + "\n");
@@ -181,6 +184,8 @@ public class Repl {
                     if (!observerJoined.toString().contains("Error")) {
                         System.out.println("Game Observer Joined");
                         ChessBoardUI.main();
+                        System.out.println();
+                        System.out.print("[LOGGED IN] >>> ");
                     }
                     else {
                         System.out.println("Error joining observer game" + observerJoined + "\n");
@@ -191,6 +196,7 @@ public class Repl {
                     running = false;
                     break;
                 case "quit":
+                    System.out.println("Quitting game");
                     break;
                 default:
                     System.out.println("Invalid command, type help to get started.\n");

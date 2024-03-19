@@ -247,9 +247,6 @@ public class ServerFacade {
             // Read in the HTTP response
             InputStream responseBody = connection.getInputStream();
             String responseBodyString = readInputStream(responseBody);
-
-            // Parse to get the username and return it
-            JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
             return responseBodyString;
         }
         else {
@@ -258,9 +255,6 @@ public class ServerFacade {
 
             // Read response body from InputStream
             String responseBodyString = readInputStream(responseBody);
-            JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
-            String message = jsonObject.get("message").getAsString();
-
             return responseBodyString;
         }
     }

@@ -240,7 +240,7 @@ public class Server {
         if (jsonObject.get("gameID").getAsInt() == 0) {
             res.status(400);
             JsonObject newJson = new JsonObject();
-            newJson.addProperty("message", "Error: bad request");
+            newJson.addProperty("message", "Error: invalid gameID");
             json = gson.toJson(newJson);
             return json;
         }
@@ -259,7 +259,7 @@ public class Server {
                     newJson.addProperty("gameID", game);
                 } else {
                     res.status(400);
-                    newJson.addProperty("message", "Error: bad request");
+                    newJson.addProperty("message", "Error: no games");
                 }
             }
             json = gson.toJson(newJson);
@@ -276,7 +276,7 @@ public class Server {
                 if (getPlayerColor) {
                     res.status(403);
                     JsonObject newJson = new JsonObject();
-                    newJson.addProperty("message", "Error: bad request");
+                    newJson.addProperty("message", "Error: invalid player color");
                     json = gson.toJson(newJson);
                     return json;
                 }
@@ -287,7 +287,7 @@ public class Server {
                 else {
                     res.status(403);
                     JsonObject newJson = new JsonObject();
-                    newJson.addProperty("message", "Error: bad request");
+                    newJson.addProperty("message", "Error: error joining game");
                     json = gson.toJson(newJson);
                     return json;
                 }
@@ -295,7 +295,7 @@ public class Server {
             else {
                 res.status(500);
                 JsonObject newJson = new JsonObject();
-                newJson.addProperty("message", "Error: bad request");
+                newJson.addProperty("message", "Error: no game");
                 json = gson.toJson(newJson);
                 return json;
             }

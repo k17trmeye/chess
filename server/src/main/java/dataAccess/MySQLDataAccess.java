@@ -187,11 +187,14 @@ public class MySQLDataAccess implements DataAccess{
 
     @Override
     public boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException {
+        System.out.println("Username: "+ username);
+        System.out.println("playerColor: "+ playerColor);
+        System.out.println("gameID: "+ gameID.toString());
         try (var conn = DatabaseManager.getConnection()) {
             String statement = null;
-            if (Objects.equals(playerColor, "BLACK") && getPlayerUsername(playerColor, gameID) == null) {
+            if (Objects.equals(playerColor.toUpperCase(), "BLACK") && getPlayerUsername(playerColor, gameID) == null) {
                 statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
-            } else if (Objects.equals(playerColor, "WHITE")) {
+            } else if (Objects.equals(playerColor.toUpperCase(), "WHITE")) {
                 statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
             }
             if (statement == null) {

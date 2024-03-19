@@ -75,6 +75,7 @@ public class ServerFacadeTests {
     @Test
     void joinGameTest() throws Exception {
         var authData = facade.joinGame(authToken, "BLACK", gameID);
+        System.out.println(authData);
         assertNotNull(authData,"Error joining game");
         authData = facade.joinGame("hello", "WHITE", gameID);
         assertTrue(authData.toString().contains("Error"), "Error joining game with invalid authToken");
