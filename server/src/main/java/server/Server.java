@@ -8,13 +8,16 @@ import service.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.List;
+import server.websocket.WebSocketHandler;
 
 public class Server {
     private final Services services;
+    private final WebSocketHandler webSocketHandler;
     public Server() {
 //        services = new Services(new MemoryDataAccess());
         try {
             services = new Services(new MySQLDataAccess());
+            webSocketHandler = new WebSocketHandler(services);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -22,6 +25,9 @@ public class Server {
     public int run(int desiredPort) {
         Spark.port(desiredPort);
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/connect", webSocketHandler);
+
         Spark.delete("/db", this::clearAll);
         Spark.post("/user", this::registerUser);
         Spark.post("/session", this::loginUser);
@@ -52,7 +58,7 @@ public class Server {
 
         if (user.getPassword() == null || user.getEmail() == null) {
             res.status(400);
-            jsonObject.addProperty("message", "Error: already taken");
+            jsonObject.addProperty("message", "Error: invalid password/ email");
             json = gson.toJson(jsonObject);
         }
         else if (username == null) {
@@ -63,7 +69,7 @@ public class Server {
         }
         else {
             res.status(403);
-            jsonObject.addProperty("message", "Error: already taken");
+            jsonObject.addProperty("message", "Error: username already taken");
             json = gson.toJson(jsonObject);
         }
 
@@ -92,7 +98,7 @@ public class Server {
             } else {
                 res.status(401);
                 JsonObject newJson = new JsonObject();
-                newJson.addProperty("message", "Error: unauthorized");
+                newJson.addProperty("message", "Error: invalid username/ password");
                 json = gson.toJson(newJson);
             }
             return json;
@@ -118,14 +124,14 @@ public class Server {
             } else {
                 res.status(500);
                 JsonObject newJson = new JsonObject();
-                newJson.addProperty("message", "Error: auth not deleted");
+                newJson.addProperty("message", "Error: invalid authToken");
                 json = gson.toJson(newJson);
             }
         }
         else {
             res.status(401);
             JsonObject newJson = new JsonObject();
-            newJson.addProperty("message", "Error: unauthorized");
+            newJson.addProperty("message", "Error: no user found");
             json = gson.toJson(newJson);
         }
         return json;
@@ -156,7 +162,7 @@ public class Server {
         }
         else {
             res.status(401);
-            jsonObject.addProperty("message", "Error: unauthorized");
+            jsonObject.addProperty("message", "Error: invalid authToken");
             JsonArray jsonArray = new JsonArray();
             jsonObject.add("games", jsonArray);
             json = gson.toJson(jsonObject);
@@ -223,7 +229,7 @@ public class Server {
         else {
             res.status(401);
             JsonObject newJson = new JsonObject();
-            newJson.addProperty("message", "Error: unauthorized");
+            newJson.addProperty("message", "Error: invalid authToken");
             json = gson.toJson(newJson);
         }
 
@@ -236,6 +242,8 @@ public class Server {
         JsonObject jsonObject = new Gson().fromJson(req.body(), JsonObject.class);
         String json;
         Gson gson = new Gson();
+        String authToken = req.headers("Authorization");
+        String userName = services.getUsername(authToken);
 
         if (jsonObject.get("gameID").getAsInt() == 0) {
             res.status(400);
@@ -246,11 +254,9 @@ public class Server {
         }
         else if (jsonObject.get("playerColor") == null) {
             JsonObject newJson = new JsonObject();
-            String authToken = req.headers("Authorization");
-            String userName = services.getUsername(authToken);
             if (userName == null) {
                 res.status(401);
-                newJson.addProperty("message", "Error: unauthorized");
+                newJson.addProperty("message", "Error: invalid authToken");
             }
             else {
                 Integer game = services.getGame(jsonObject.get("gameID").getAsInt());
@@ -268,8 +274,6 @@ public class Server {
 
         String teamColor = jsonObject.get("playerColor").getAsString();
         Integer gameID = jsonObject.get("gameID").getAsInt();
-        String authToken = req.headers("Authorization");
-        String userName = services.getUsername(authToken);
         if (userName != null) {
             if (gameID.equals(services.getGame(gameID))) {
                 boolean getPlayerColor = services.getPlayerColor(userName, teamColor, gameID);
@@ -287,7 +291,7 @@ public class Server {
                 else {
                     res.status(403);
                     JsonObject newJson = new JsonObject();
-                    newJson.addProperty("message", "Error: error joining game");
+                    newJson.addProperty("message", "Error: player already taken");
                     json = gson.toJson(newJson);
                     return json;
                 }
@@ -303,7 +307,7 @@ public class Server {
         else {
             res.status(401);
             JsonObject newJson = new JsonObject();
-            newJson.addProperty("message", "Error: unauthorized");
+            newJson.addProperty("message", "Error: invalid authToken");
             json = gson.toJson(newJson);
             return json;
         }

@@ -202,9 +202,9 @@ public class ChessGame {
 
         // Change move to other team
         if (teamColor == TeamColor.WHITE) {
-            setTeamTurn(TeamColor.BLACK);
+            this.teamColor = TeamColor.BLACK;
         } else if (teamColor == TeamColor.BLACK) {
-            setTeamTurn(TeamColor.WHITE);
+            this.teamColor = TeamColor.WHITE;
         }
     }
 
@@ -429,11 +429,8 @@ public class ChessGame {
         return Objects.hash(teamColor, chessBoard);
     }
 
-    @Override
-    public String toString() {
-        return "ChessGame{" +
-                "team_color=" + teamColor +
-                ", game_board=" + chessBoard +
-                '}';
+
+    public void print() {
+        chessBoard.print();
     }
 }

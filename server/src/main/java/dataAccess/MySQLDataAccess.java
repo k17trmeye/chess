@@ -1,6 +1,7 @@
 package dataAccess;
 
 import chess.ChessGame;
+import chess.ChessPosition;
 import model.AuthData;
 import model.GameData;
 
@@ -155,7 +156,9 @@ public class MySQLDataAccess implements DataAccess{
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.setInt(1, gameID);
                 preparedStatement.setString(2, gameName);
-                var json = new Gson().toJson(new ChessGame());
+                ChessGame newGame = new ChessGame();
+                newGame.setTeamTurn(ChessGame.TeamColor.WHITE);
+                var json = new Gson().toJson(newGame);
                 preparedStatement.setString(3, json);
                 preparedStatement.executeUpdate();
             }
@@ -186,13 +189,60 @@ public class MySQLDataAccess implements DataAccess{
     }
 
     @Override
+    public boolean returnChessGame(Integer gameID, ChessGame chessGame) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = "UPDATE gameData SET game = ? WHERE gameID = ?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                var json = new Gson().toJson(chessGame);
+                ps.setString(1, json);
+                ps.setInt(2, gameID);
+                ps.executeUpdate();
+                return true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public ChessGame getChessGame(Integer gameID) throws DataAccessException {
+        String newGameID = null;
+        try (var conn = DatabaseManager.getConnection()) {
+            String statement = "SELECT game FROM gameData WHERE gameID = ?";
+            try (PreparedStatement ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        newGameID =  rs.getString("game");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        ChessGame chessGame = new Gson().fromJson(newGameID, ChessGame.class);
+        return chessGame;
+    }
+
+    @Override
     public boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
             String statement = null;
-            if (Objects.equals(playerColor.toUpperCase(), "BLACK") && getPlayerUsername(playerColor, gameID) == null) {
-                statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
+            if (playerColor.isEmpty()) {
+                statement = "UPDATE gameData SET observers = ? WHERE gameID = ?";
+            }
+            else if (Objects.equals(playerColor.toUpperCase(), "BLACK")) {
+                if (getPlayerUsername(playerColor, gameID) == null){
+                    statement = "UPDATE gameData SET blackUsername = ? WHERE gameID = ?";
+                } else if (getPlayerUsername(playerColor, gameID).contains(username)) {
+                    return true;
+                }
             } else if (Objects.equals(playerColor.toUpperCase(), "WHITE")) {
-                statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
+                if (getPlayerUsername(playerColor, gameID) == null){
+                    statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
+                } else if (getPlayerUsername(playerColor, gameID).contains(username)) {
+                    return true;
+                }
             }
             if (statement == null) {
                 return false;
@@ -226,9 +276,9 @@ public class MySQLDataAccess implements DataAccess{
                 String blackUsername = resultSet.getString("blackUsername");
                 String whiteUsername = resultSet.getString("whiteUsername");
 
-                if ((playerColor == "BLACK") && blackUsername == null) {
+                if ((playerColor == "BLACK") && (blackUsername == null || blackUsername == username)) {
                     return true;
-                } else if ((playerColor == "WHITE") && whiteUsername == null) {
+                } else if ((playerColor == "WHITE") && (whiteUsername == null || whiteUsername == username)) {
                     return true;
                 }
             }
@@ -318,6 +368,7 @@ public class MySQLDataAccess implements DataAccess{
                `blackUsername` varchar(256) DEFAULT NULL,
                `gameName` varchar(256) NOT NULL,
                `game` blob NOT NULL,
+               `observers` TEXT DEFAULT NULL,
                `json` TEXT DEFAULT NULL,
                PRIMARY KEY (`id`)
              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
@@ -350,7 +401,10 @@ public class MySQLDataAccess implements DataAccess{
     private void configureDatabase() throws DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-////             Used to clear DB
+            boolean gameTableExists = doesTableExist(conn, "gameData");
+            boolean authTableExists = doesTableExist(conn, "authData");
+            boolean userTableExists = doesTableExist(conn, "userData");
+//             Used to clear DB
 //            var newStatement = "DROP TABLE IF EXISTS gameData";
 //            try (var preparedStatement = conn.prepareStatement(newStatement)) {
 //                preparedStatement.executeUpdate();
@@ -365,25 +419,44 @@ public class MySQLDataAccess implements DataAccess{
 //            }
 
             // Used to create DB
-            for (var statement : createUserDB) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+            if (!userTableExists) {
+                System.out.println("creating userDB");
+                for (var statement : createUserDB) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
                 }
             }
-            for (var statement : createAuthDB) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+
+            if (!authTableExists) {
+                System.out.println("creating authDB");
+                for (var statement : createAuthDB) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
                 }
             }
-            for (var statement : createGameDB) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
+
+            if (!gameTableExists) {
+                System.out.println("creating gameDB");
+                for (var statement : createGameDB) {
+                    try (var preparedStatement = conn.prepareStatement(statement)) {
+                        preparedStatement.executeUpdate();
+                    }
                 }
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
     }
+
+    private boolean doesTableExist(Connection conn, String tableName) throws SQLException {
+        try (var statement = conn.createStatement()) {
+            statement.execute("SHOW TABLES LIKE '" + tableName + "'");
+            return statement.getResultSet().next(); // If the result set is not empty, the table exists
+        }
+    }
+
     private String newAuthToken() {
         StringBuilder sb;
 
@@ -405,30 +478,32 @@ public class MySQLDataAccess implements DataAccess{
         return random.nextInt(9000) + 1000;
     }
 
-    private String getPlayerUsername(String playerColor, Integer gameID) throws DataAccessException{
+    private String getPlayerUsername(String playerColor, Integer gameID) throws DataAccessException {
         String username = null;
         try (var conn = DatabaseManager.getConnection()) {
             String statement = null;
             String query = null;
-            if (Objects.equals(playerColor, "BLACK")) {
+            if ("BLACK".equals(playerColor.toUpperCase())) {
                 statement = "SELECT blackUsername FROM gameData WHERE gameID = ?";
                 query = "blackUsername";
-            }
-            else if (playerColor == "WHITE") {
+            } else if ("WHITE".equals(playerColor.toUpperCase())) {
                 statement = "SELECT whiteUsername FROM gameData WHERE gameID = ?";
                 query = "whiteUsername";
+            } else {
+                throw new IllegalArgumentException("Invalid player color: " + playerColor);
             }
             try (PreparedStatement ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        username =  rs.getString(query);
+                        username = rs.getString(query);
                     }
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error executing SQL query", e);
         }
         return username;
     }
+
 }

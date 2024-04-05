@@ -13,6 +13,7 @@ public class ChessBoard {
     private ChessPiece[][] chessBoard = new ChessPiece[8][8];
 
     public ChessBoard() {
+        resetBoard();
     }
 
     /**
@@ -96,6 +97,16 @@ public class ChessBoard {
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
         return Arrays.deepEquals(chessBoard, that.chessBoard);
+    }
+
+    public void print() {
+        char[][] board = getBoard();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                System.out.print(board[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 
 

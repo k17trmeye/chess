@@ -1,5 +1,6 @@
 package dataAccess;
 
+import chess.ChessGame;
 import model.*;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public interface DataAccess {
     List<GameData> listGames() throws DataAccessException;
     Integer createGame(String gameName) throws DataAccessException;
     Integer getGame(Integer gameID) throws DataAccessException;
+    boolean returnChessGame(Integer gameID, ChessGame chessGame) throws DataAccessException;
+    ChessGame getChessGame(Integer gameID) throws DataAccessException;
     boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException;
     boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException;
 

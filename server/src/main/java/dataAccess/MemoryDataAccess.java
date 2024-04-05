@@ -1,14 +1,28 @@
 package dataAccess;
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MemoryDataAccess implements DataAccess{
+
+    @Override
+    public boolean returnChessGame(Integer gameID, ChessGame chessGame) throws DataAccessException {
+        return false;
+    }
+
+    @Override
+    public ChessGame getChessGame(Integer gameID) throws DataAccessException {
+        return new ChessGame();
+    }
     private final List<UserData> dbUserdata = new ArrayList<>();
     @Override
     public void clearUserData() {

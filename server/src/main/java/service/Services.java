@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessGame;
 import dataAccess.*;
 import model.AuthData;
 import model.GameData;
@@ -51,5 +52,12 @@ public class Services {
     }
     public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException {
         return dataAccess.getPlayerColor(username, playerColor, gameID);
+    }
+    public boolean returnChessGame(Integer gameID, ChessGame chessGame) throws DataAccessException{
+        return dataAccess.returnChessGame(gameID, chessGame);
+    }
+
+    public ChessGame getChessGame(Integer gameID) throws DataAccessException{
+        return dataAccess.getChessGame(gameID);
     }
 }
