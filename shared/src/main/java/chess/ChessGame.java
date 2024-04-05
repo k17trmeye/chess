@@ -17,6 +17,7 @@ public class ChessGame {
 
     public ChessGame() {
         chessBoard = new ChessBoard();
+        teamColor = TeamColor.WHITE;
     }
 
     /**
@@ -40,7 +41,8 @@ public class ChessGame {
      */
     public enum TeamColor {
         WHITE,
-        BLACK
+        BLACK,
+        DONE
     }
 
     /**

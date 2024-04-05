@@ -14,10 +14,10 @@ public class Server {
     private final Services services;
     private final WebSocketHandler webSocketHandler;
     public Server() {
-//        services = new Services(new MemoryDataAccess());
         try {
             services = new Services(new MySQLDataAccess());
-            webSocketHandler = new WebSocketHandler(services);
+            webSocketHandler = new WebSocketHandler();
+            webSocketHandler.setServices(services);
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
@@ -276,8 +276,8 @@ public class Server {
         Integer gameID = jsonObject.get("gameID").getAsInt();
         if (userName != null) {
             if (gameID.equals(services.getGame(gameID))) {
-                boolean getPlayerColor = services.getPlayerColor(userName, teamColor, gameID);
-                if (getPlayerColor) {
+                String getPlayerColor = services.getPlayerColor(teamColor, gameID);
+                if (getPlayerColor == null) {
                     res.status(403);
                     JsonObject newJson = new JsonObject();
                     newJson.addProperty("message", "Error: invalid player color");

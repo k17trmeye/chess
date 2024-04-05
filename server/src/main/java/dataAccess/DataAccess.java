@@ -19,7 +19,7 @@ public interface DataAccess {
     boolean returnChessGame(Integer gameID, ChessGame chessGame) throws DataAccessException;
     ChessGame getChessGame(Integer gameID) throws DataAccessException;
     boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException;
-    boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException;
+    String getPlayerColor(String playerColor, Integer gameID) throws DataAccessException;
 
     void clearUserData() throws DataAccessException;
     String checkUserName(String userName) throws DataAccessException;

@@ -203,12 +203,12 @@ public class ChessServerSQLTests {
         // Valid Test
         Integer gameID = services.createGame("game");
         services.joinGame("existingUser", "BLACK", gameID);
-        boolean playerColor = services.getPlayerColor("existingUser", "BLACK", gameID);
-        assertFalse(playerColor, "Error getting player color");
+        String playerColor = services.getPlayerColor("BLACK", gameID);
+        assertEquals(playerColor, "existingUser", "Error getting player color");
 
         // Invalid Test
-        playerColor = services.getPlayerColor("existingUser", "WHITE", gameID);
-        assertTrue(playerColor, "Invalid player color");
+        playerColor = services.getPlayerColor("WHITE", gameID);
+        assertNotEquals(playerColor, "existingUser", "Invalid player color");
     }
 
     @Test
@@ -216,12 +216,12 @@ public class ChessServerSQLTests {
         // Valid Test
         Integer gameID = services.createGame("game");
         services.joinGame("existingUser", "BLACK", gameID);
-        boolean playerColor = services.getPlayerColor("existingUser", "BLACK", gameID);
-        assertFalse(playerColor, "Error getting player color");
+        String playerColor = services.getPlayerColor( "BLACK", gameID);
+        assertEquals(playerColor, "existingUser", "Error getting player color");
 
         // Invalid Test
-        playerColor = services.getPlayerColor("existingUser", "WHITE", gameID);
-        assertTrue(playerColor, "Invalid player color");
+        playerColor = services.getPlayerColor("WHITE", gameID);
+        assertNotEquals(playerColor, "existingUser", "Invalid player color");
     }
 
     @Test

@@ -50,8 +50,8 @@ public class Services {
     public boolean joinGame(String username, String playerColor, Integer gameID) throws DataAccessException {
         return dataAccess.joinGame(username, playerColor, gameID);
     }
-    public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException {
-        return dataAccess.getPlayerColor(username, playerColor, gameID);
+    public String getPlayerColor(String playerColor, Integer gameID) throws DataAccessException {
+        return dataAccess.getPlayerColor(playerColor, gameID);
     }
     public boolean returnChessGame(Integer gameID, ChessGame chessGame) throws DataAccessException{
         return dataAccess.returnChessGame(gameID, chessGame);

@@ -104,9 +104,7 @@ public class WebSocketTests {
         //try join someone else's reserved spot
         Map<String, List<TestModels.TestMessage>> messages =
                 joinPlayer(white.user, white.authToken, gameID, ChessGame.TeamColor.BLACK, Set.of(), Set.of());
-        System.out.println(white.user);
-        System.out.println(white.authToken);
-        System.out.println(gameID);
+
         //check received message
         assertErrorMessage(messages.get(white.user));
     }
@@ -691,7 +689,6 @@ public class WebSocketTests {
         Assertions.assertEquals(1, messages.size(), "Expected 1 message, got " + messages.size());
         Assertions.assertEquals(TestModels.TestServerMessageType.LOAD_GAME, messages.get(0).serverMessageType,
                 "Message was not a LOAD_GAME message");
-        System.out.println(messages.get(0).game);
         Assertions.assertNotNull(messages.get(0).game, "LOAD_GAME message did not contain a game");
     }
 

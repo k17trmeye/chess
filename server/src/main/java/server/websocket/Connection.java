@@ -9,11 +9,13 @@ public class Connection {
     public Session session;
     public String playerName;
     public ChessGame chessGame;
+    public Integer gameID;
 
-    public Connection(Session session, String playerName, ChessGame chessGame) {
+    public Connection(Session session, String playerName, ChessGame chessGame, Integer gameID) {
         this.session = session;
         this.playerName = playerName;
         this.chessGame = chessGame;
+        this.gameID = gameID;
     }
 
     public void send(String msg) throws IOException {

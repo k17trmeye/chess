@@ -259,7 +259,7 @@ public class MySQLDataAccess implements DataAccess{
     }
 
     @Override
-    public boolean getPlayerColor(String username, String playerColor, Integer gameID) throws DataAccessException {
+    public String getPlayerColor(String playerColor, Integer gameID) throws DataAccessException {
         PreparedStatement preparedStatement;
         ResultSet resultSet;
 
@@ -276,13 +276,13 @@ public class MySQLDataAccess implements DataAccess{
                 String blackUsername = resultSet.getString("blackUsername");
                 String whiteUsername = resultSet.getString("whiteUsername");
 
-                if ((playerColor == "BLACK") && (blackUsername == null || blackUsername == username)) {
-                    return true;
-                } else if ((playerColor == "WHITE") && (whiteUsername == null || whiteUsername == username)) {
-                    return true;
+                if (playerColor.toLowerCase().contains("black")) {
+                    return blackUsername;
+                } else if (playerColor.toLowerCase().contains("white")) {
+                    return whiteUsername;
                 }
             }
-            return false;
+            return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
