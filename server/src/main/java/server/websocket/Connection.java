@@ -10,12 +10,14 @@ public class Connection {
     public String playerName;
     public ChessGame chessGame;
     public Integer gameID;
+    public boolean observer;
 
-    public Connection(Session session, String playerName, ChessGame chessGame, Integer gameID) {
+    public Connection(Session session, String playerName, ChessGame chessGame, Integer gameID, boolean observer) {
         this.session = session;
         this.playerName = playerName;
         this.chessGame = chessGame;
         this.gameID = gameID;
+        this.observer = observer;
     }
 
     public void send(String msg) throws IOException {

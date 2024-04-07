@@ -277,7 +277,7 @@ public class Server {
         if (userName != null) {
             if (gameID.equals(services.getGame(gameID))) {
                 String getPlayerColor = services.getPlayerColor(teamColor, gameID);
-                if (getPlayerColor == null) {
+                if (getPlayerColor != null) {
                     res.status(403);
                     JsonObject newJson = new JsonObject();
                     newJson.addProperty("message", "Error: invalid player color");

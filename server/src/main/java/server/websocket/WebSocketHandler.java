@@ -36,7 +36,7 @@ public class WebSocketHandler {
             case JOIN_OBSERVER -> joinObserver(action, session);
             case MAKE_MOVE -> makeMove(action, session);
             case LEAVE -> leavePlayer(action);
-            case RESIGN -> forfeitMatch(action);
+            case RESIGN -> forfeitMatch(action, session);
         }
     }
 
@@ -45,6 +45,7 @@ public class WebSocketHandler {
         String playerName = services.getUsername(authToken);
         ChessGame.TeamColor teamColor = action.getPlayerColor();
         ChessGame.TeamColor testColor = null;
+        UserGameCommand.CommandType type = action.getCommandType();
         if (teamColor.toString().toLowerCase().contains("black")) {
             testColor = ChessGame.TeamColor.WHITE;
         } else {
@@ -53,14 +54,25 @@ public class WebSocketHandler {
         Integer gameID = action.getGameID();
 
         ChessGame chessGame = services.getChessGame(gameID);
-        connections.add(gameID, session, playerName, chessGame);
+
+
+        connections.add(gameID, session, playerName, chessGame, false);
+
+        if (!Objects.equals(services.getPlayerColor(teamColor.toString(), gameID), playerName)) {
+            String zeroMessage = "Error: Invalid request";
+            var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            zero.setErrorMessage(zeroMessage);
+            connections.sendToUser(gameID, zero, playerName, session);
+            connections.remove(gameID, playerName, type);
+            return;
+        }
 
         if (playerName == null) {
             String zeroMessage = "Error: Invalid authToken";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             zero.setErrorMessage(zeroMessage);
             connections.sendToUser(gameID, zero, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (authToken == null) {
@@ -68,7 +80,7 @@ public class WebSocketHandler {
             var one = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             one.setErrorMessage(oneMessage);
             connections.sendToUser(gameID, one, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (gameID == 0) {
@@ -76,7 +88,15 @@ public class WebSocketHandler {
             var two = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             two.setErrorMessage(twoMessage);
             connections.sendToUser(gameID, two, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
+            return;
+        }
+        if (services.getChessGame(gameID) == null) {
+            String sixMessage = "Error: Invalid gameID";
+            var six = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            six.setErrorMessage(sixMessage);
+            connections.sendToUser(gameID, six, playerName, session);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (services.getChessGame(gameID).getTeamTurn() == null) {
@@ -84,7 +104,7 @@ public class WebSocketHandler {
             var six = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             six.setErrorMessage(sixMessage);
             connections.sendToUser(gameID, six, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (services.getChessGame(gameID).getTeamTurn() == null) {
@@ -92,7 +112,7 @@ public class WebSocketHandler {
             var six = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             six.setErrorMessage(sixMessage);
             connections.sendToUser(gameID, six, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (services.getToken(playerName) == authToken) {
@@ -100,7 +120,7 @@ public class WebSocketHandler {
             var three = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             three.setErrorMessage(threeMessage);
             connections.sendToUser(gameID, three, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (Objects.equals(services.getPlayerColor(testColor.toString(), gameID), playerName)) {
@@ -108,16 +128,16 @@ public class WebSocketHandler {
             var four = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             four.setErrorMessage(fourMessage);
             connections.sendToUser(gameID, four, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
 
-        if (services.getPlayerColor(teamColor.toString(), gameID) != null) {
+        if (services.getPlayerColor(teamColor.toString(), gameID) == null) {
             String fourMessage = "Error: Invalid playerColor";
             var four = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             four.setErrorMessage(fourMessage);
             connections.sendToUser(gameID, four, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (!Objects.equals(services.getGame(gameID), gameID)) {
@@ -125,11 +145,10 @@ public class WebSocketHandler {
             var five = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             five.setErrorMessage(fiveMessage);
             connections.sendToUser(gameID, five, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
 
-        services.joinGame(playerName, teamColor.toString(), gameID);
         var newNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         newNotification.setMessage("loading game");
         newNotification.setGame(chessGame);
@@ -149,25 +168,42 @@ public class WebSocketHandler {
         String playerName = action.getUser();
         String authToken = action.getAuthString();
         Integer gameID = action.getGameID();
-        connections.remove(gameID, playerName);
+        UserGameCommand.CommandType type = action.getCommandType();
+
         String message = String.format("%s has left the game", playerName);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         notification.setMessage(message);
-        connections.broadcast(gameID, notification, authToken, false);
+        connections.broadcast(gameID, notification, services.getUsername(authToken), false);
+
+        connections.remove(gameID, services.getUsername(authToken), type);
     }
 
-    private void forfeitMatch(UserGameCommand action) throws IOException, DataAccessException {
+    private void forfeitMatch(UserGameCommand action, Session session) throws IOException, DataAccessException {
         String playerName = action.getUser();
         String authToken = action.getAuthString();
         Integer gameID = action.getGameID();
-        connections.remove(gameID, playerName);
-        System.out.println("Turn before: " + services.getChessGame(gameID).getTeamTurn());
-        services.getChessGame(gameID).setTeamTurn(ChessGame.TeamColor.DONE);
-        System.out.println("Turn after: " + services.getChessGame(gameID).getTeamTurn());
+        UserGameCommand.CommandType type = action.getCommandType();
+
+        if (connections.isObserver(gameID, services.getUsername(authToken))) {
+            String oneMessage = "Error: Not a player";
+            var one = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            one.setErrorMessage(oneMessage);
+            connections.sendToUser(gameID, one, playerName, session);
+            return;
+        }
+
+        if (connections.getGameID(services.getUsername(authToken)) == 0) {
+            String oneMessage = "Error: Game Already Over";
+            var one = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+            one.setErrorMessage(oneMessage);
+            connections.sendToUser(gameID, one, playerName, session);
+            return;
+        }
         String message = String.format("%s has forfeited the match", playerName);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         notification.setMessage(message);
-        connections.broadcast(gameID, notification, authToken, false);
+        connections.broadcast(gameID, notification, authToken, true);
+        connections.remove(gameID, playerName, type);
     }
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, DataAccessException, InvalidMoveException {
@@ -176,34 +212,44 @@ public class WebSocketHandler {
         String authToken = action.getAuthString();
         Integer gameID = action.getGameID();
         ChessMove move = action.getMove();
+
         String testUsername = services.getUsername(authToken);
         ChessGame.TeamColor currColor = services.getChessGame(gameID).getTeamTurn();
+
         if (services.getPlayerColor("WHITE", gameID).toLowerCase().contains(testUsername)) {
             playerColor = ChessGame.TeamColor.WHITE;
         } else if (services.getPlayerColor("BLACK", gameID).toLowerCase().contains(testUsername)) {
             playerColor = ChessGame.TeamColor.BLACK;
         }
+        ChessGame chessGame = null;
         if (currColor == playerColor) {
             Collection<ChessMove> moves = services.getChessGame(gameID).validMoves(move.getStartPosition());
             for (ChessMove eachMove : moves) {
                 if (eachMove.getStartPosition().getColumn() == move.getStartPosition().getColumn() && eachMove.getStartPosition().getRow() == move.getStartPosition().getRow()) {
                     if (eachMove.getEndPosition().getColumn() == move.getEndPosition().getColumn() && eachMove.getEndPosition().getRow() == move.getEndPosition().getRow()) {
-                        ChessGame chessGame = connections.makeMove(gameID, playerName, move);
+                        chessGame = connections.makeMove(gameID, playerName, move);
+                        if (chessGame == null) {
+                            String threeMessage = "Error: No game found";
+                            var three = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                            three.setErrorMessage(threeMessage);
+                            connections.sendToUser(gameID, three, playerName, session);
+                            return;
+                        } else {
+                            String message = "Successful move";
+                            var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+                            notification.setMessage(message);
+                            notification.setGame(chessGame);
+                            connections.broadcast(gameID, notification, testUsername, true);
 
-                        String message = "Successful move";
-                        var notification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-                        notification.setMessage(message);
-                        notification.setGame(chessGame);
-                        connections.broadcast(gameID, notification, testUsername, true);
+                            String newMessage = String.format("%s has made move", playerName);
+                            var newNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+                            newNotification.setMessage(newMessage);
+                            newNotification.setGame(chessGame);
+                            connections.broadcast(gameID, newNotification, testUsername, false);
 
-                        String newMessage = String.format("%s has made move", playerName);;
-                        var newNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
-                        newNotification.setMessage(newMessage);
-                        newNotification.setGame(chessGame);
-                        connections.broadcast(gameID, newNotification, testUsername, false);
-
-                        services.returnChessGame(gameID, chessGame);
-                        return;
+                            services.returnChessGame(gameID, chessGame);
+                            return;
+                        }
                     }
                 }
             }
@@ -225,16 +271,17 @@ public class WebSocketHandler {
         String authToken = action.getAuthString();
         String playerName = services.getUsername(authToken);
         Integer gameID = action.getGameID();
+        UserGameCommand.CommandType type = action.getCommandType();
 
         ChessGame chessGame = services.getChessGame(gameID);
-        connections.add(gameID, session, playerName, chessGame);
+        connections.add(gameID, session, playerName, chessGame, true);
 
         if (chessGame == null) {
             String oneMessage = "Error: Invalid gameID";
             var one = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             one.setErrorMessage(oneMessage);
             connections.sendToUser(gameID, one, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
         if (playerName == null) {
@@ -242,7 +289,7 @@ public class WebSocketHandler {
             var two = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             two.setErrorMessage(twoMessage);
             connections.sendToUser(gameID, two, playerName, session);
-            connections.remove(gameID, playerName);
+            connections.remove(gameID, playerName, type);
             return;
         }
 
