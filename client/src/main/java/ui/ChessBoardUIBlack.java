@@ -1,21 +1,19 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
 import javax.websocket.*;
 import java.net.URI;
-import java.util.Scanner;
 
 public class ChessBoardUIBlack {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
@@ -37,6 +35,25 @@ public class ChessBoardUIBlack {
 
         drawHeaders(out);
         drawTicTacToeBoard(out);
+        drawHeaders(out);
+
+        out.print("\u001B[0m");
+        out.print("\u001B[0m");
+        out.println();
+        out.println();
+
+        System.out.print("[GAMEPLAY] >>> ");
+    }
+
+    public static void showMoves(ChessGame newChessGame, List<int[]> moves) {
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        Init();
+        chessGame = newChessGame;
+
+        out.print(ERASE_SCREEN);
+
+        drawHeaders(out);
+        drawTicTacToeBoardwithMoves(out, moves);
         drawHeaders(out);
 
         out.print("\u001B[0m");
@@ -147,6 +164,70 @@ public class ChessBoardUIBlack {
         }
     }
 
+    private static void drawTicTacToeBoardwithMoves(PrintStream out, List<int[]> moves) {
+
+        for (int boardRow = BOARD_SIZE_IN_SQUARES - 1; boardRow >= 0 ; --boardRow) {
+            alternate = !alternate;
+            for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
+                if (squareRow == 1) {
+                    Integer newRow = boardRow + 1;
+                    printRowNum(out, newRow.toString() + " ");
+                }
+                else {
+                    printRowNum(out, "  ");
+                }
+                for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+                    boolean green = false;
+                    for (int[] coordinate : moves) {
+                        int row =coordinate[0];
+                        int col = coordinate[1];
+                        if (row == (boardRow + 1)&& col == (boardCol + 1)) {
+                            green = true;
+                            setGreen(out);
+                            break;
+                        }
+                    }
+                    if (!green) {
+                        if (alternate) {
+                            setBlack(out);
+                        } else {
+                            setWhite(out);
+                        }
+                    }
+                    alternate = !alternate;
+
+                    if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
+                        int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
+                        int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
+
+                        drawPlayer(boardRow, boardCol, out, prefixLength, suffixLength);
+                    }
+                    else {
+                        out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
+                    }
+
+                    if (boardCol < BOARD_SIZE_IN_SQUARES) {
+                        out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
+                    }
+
+                    out.print("\u001B[0m");
+                }
+                if (squareRow == 1) {
+                    Integer newRow = boardRow + 1;
+                    printRowNum(out, " " + newRow.toString());
+                }
+                else {
+                    printRowNum(out, "  ");
+                }
+
+                out.println();
+            }
+            if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+                setBlack(out);
+            }
+        }
+    }
+
     public static void drawPlayer(int boardRow, int boardCol, PrintStream out, int prefixLength, int suffixLength) {
         if (chessGame.getBoard().getBoard()[boardRow][boardCol] == 'p') {
             out.print(EMPTY.repeat(prefixLength));
@@ -213,13 +294,16 @@ public class ChessBoardUIBlack {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
+    private static void setGreen(PrintStream out) {
+        out.print(SET_BG_COLOR_GREEN);
+        out.print(SET_TEXT_COLOR_GREEN);
+    }
+
     private static void printPlayer(PrintStream out, String player, String color) {
         if (Objects.equals(color, "white")) {
             out.print(SET_TEXT_COLOR_BLUE);
         } else if (Objects.equals(color, "black")) {
             out.print(SET_TEXT_COLOR_RED);
-        } else {
-
         }
         out.print(player);
 

@@ -8,6 +8,8 @@ import service.*;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import java.util.List;
+import java.util.Objects;
+
 import server.websocket.WebSocketHandler;
 
 public class Server {
@@ -277,7 +279,19 @@ public class Server {
         if (userName != null) {
             if (gameID.equals(services.getGame(gameID))) {
                 String getPlayerColor = services.getPlayerColor(teamColor, gameID);
-                if (getPlayerColor != null) {
+                // Change here
+                if (getPlayerColor == null) {
+                    if (services.joinGame(userName, teamColor, gameID)) {
+                        res.status(200);
+                        return "{}";
+                    } else {
+                        res.status(403);
+                        JsonObject newJson = new JsonObject();
+                        newJson.addProperty("message", "Error: player already taken");
+                        json = gson.toJson(newJson);
+                        return json;
+                    }
+                } else if (!getPlayerColor.equals(userName)) {
                     res.status(403);
                     JsonObject newJson = new JsonObject();
                     newJson.addProperty("message", "Error: invalid player color");

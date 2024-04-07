@@ -242,13 +242,21 @@ public class Repl {
                         if (playerColor.toLowerCase().equals("black")) {
                             System.out.println("Game Joined\n");
                             currPlayerColor = playerColor.toLowerCase();
+                            game = new GamePlay();
+                            game.joinGame(authToken, currPlayerColor, newgameID, userName);
+
                             GameUI();
+
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
                         } else if (playerColor.toLowerCase().equals("white")) {
                             System.out.println("Game Joined\n");
                             currPlayerColor = playerColor.toLowerCase();
+                            game = new GamePlay();
+                            game.joinGame(authToken, currPlayerColor, newgameID, userName);
+
                             GameUI();
+
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
                         } else {
@@ -287,8 +295,12 @@ public class Repl {
                         System.out.println("Game Observer Joined\n");
                         currPlayerColor = null;
                         newgameID = observeNewGame;
+                        game = new GamePlay();
+                        game.joinObserver(authToken, currPlayerColor, newgameID, userName);
                         GameUI();
 
+                        System.out.print("[LOGGED IN] >>> ");
+                        continue;
                     } else {
                         System.out.println("Error joining observer\n");
                         System.out.print("[LOGGED IN] >>> ");
@@ -309,25 +321,19 @@ public class Repl {
         }
     }
 
-    class GameInfo {
-        int gameID;
-    }
 
     public void GameUI() throws IOException, Exception {
-
-        game = new GamePlay();
-        if (currPlayerColor == null) {
-            game.joinObserver(authToken, currPlayerColor, newgameID, userName);
-        } else {
-            game.joinGame(authToken, currPlayerColor, newgameID, userName);
-        }
-
-        System.out.print("[GAMEPLAY] >>> ");
 
         // Trim whitespace and convert to lowercase
         boolean running = true;
 
         while (running) {
+
+            if (game.checkGame()) {
+                game.resignPlayer(authToken, newgameID, userName);
+                System.out.println("You lost, ending game\n");
+                running = false;
+            }
             String command = scanner.nextLine().trim();
 
             String[] parts = command.split("\\s+"); // Split input by whitespace
@@ -349,10 +355,9 @@ public class Repl {
                     break;
                 case "redraw":
                     game.redrawBoard();
-                    System.out.print("[GAMEPLAY] >>> ");
                     break;
                 case "leave":
-                    System.out.println("Leaving Gameplay");
+                    System.out.println("Leaving Gameplay\n");
                     game.leaveGame(authToken, newgameID, userName);
                     running = false;
                     break;
@@ -401,6 +406,7 @@ public class Repl {
                     ChessPosition newPos = new ChessPosition(newRow, newCol);
                     ChessMove newMove = new ChessMove(currPos, newPos, null);
                     game.makeMove(authToken, newgameID, currPlayerColor, newMove, userName);
+                    System.out.print("[GAMEPLAY] >>> ");
                     break;
                 case "resign":
                     if (currPlayerColor == null) {

@@ -10,6 +10,7 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.*;
 
 import com.google.gson.Gson;
 
@@ -44,14 +45,14 @@ public class GamePlay extends Endpoint{
     }
 
     public void notifyPlayer(ServerMessage action) {
-        System.out.println("\nNotification!");
+        System.out.println("");
         System.out.println(action.getMessage());
         System.out.println();
         System.out.print("[GAMEPLAY] >>> ");
     }
 
     public void printError(ServerMessage action) {
-        System.out.println("\n" + action.getMessage());
+        System.out.println("\n" + action.getErrorMessage());
         System.out.println();
         System.out.print("[GAMEPLAY] >>> ");
     }
@@ -116,18 +117,28 @@ public class GamePlay extends Endpoint{
     }
 
     public void loadBoard(ServerMessage action) {
-        System.out.println();
         ChessGame chessGame = action.getGame();
         recentGame = chessGame;
-        if (currColor.equalsIgnoreCase("white")) {
+        if (currColor == null) {
             ChessBoardUIBlack.main(chessGame);
-        } else if (currColor.equalsIgnoreCase("black")) {
+        } else if (currColor.toLowerCase().contains("white")) {
+            ChessBoardUIBlack.main(chessGame);
+        } else if (currColor.toLowerCase().contains("black")) {
             ChessBoardUIWhite.main(chessGame);
-        } else {
-            ChessBoardUIBlack.main(chessGame);
         }
 
-        System.out.print("[GAMEPLAY] >>> ");
+    }
+
+    public boolean checkGame() {
+        if (recentGame == null) {
+            return false;
+        }
+        if (currColor.toLowerCase().contains("white")) {
+            return recentGame.isInCheck(ChessGame.TeamColor.WHITE);
+        } else if (currColor.toLowerCase().contains("black")) {
+            return recentGame.isInCheck(ChessGame.TeamColor.BLACK);
+        }
+        return false;
     }
 
     public void redrawBoard() {
@@ -139,11 +150,31 @@ public class GamePlay extends Endpoint{
         } else if (currColor.equalsIgnoreCase("black")) {
             ChessBoardUIWhite.main(recentGame);
         }
-        System.out.println();
         System.out.print("[GAMEPLAY] >>> ");
     }
 
     public void showMoves(ChessPosition pos) {
+        Collection<ChessMove> moves = recentGame.validMoves(pos);
+        List<int[]> coordinatesList = new ArrayList<>();
+        Integer tempRow = null;
+        Integer tempCol = null;
+        for (ChessMove eachMove : moves) {
+            tempRow = eachMove.getEndPosition().getRow();
+            tempCol = eachMove.getEndPosition().getColumn();
+            coordinatesList.add(new int[]{tempRow, tempCol});
+        }
+
+        if (!coordinatesList.isEmpty()) {
+            if (currColor.equalsIgnoreCase("white")) {
+                ChessBoardUIBlack.showMoves(recentGame, coordinatesList);
+            } else if (currColor.equalsIgnoreCase("black")) {
+                ChessBoardUIWhite.showMoves(recentGame, coordinatesList);
+            } else {
+                ChessBoardUIBlack.showMoves(recentGame, coordinatesList);
+            }
+        } else {
+            System.out.println("No moves available");
+        }
 
     }
 
