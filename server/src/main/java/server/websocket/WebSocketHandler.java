@@ -52,12 +52,8 @@ public class WebSocketHandler {
             testColor = ChessGame.TeamColor.BLACK;
         }
         Integer gameID = action.getGameID();
-
         ChessGame chessGame = services.getChessGame(gameID);
-
-
         connections.add(gameID, session, playerName, chessGame, false);
-
         if (!Objects.equals(services.getPlayerColor(teamColor.toString(), gameID), playerName)) {
             String zeroMessage = "Error: Invalid request";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
@@ -66,7 +62,6 @@ public class WebSocketHandler {
             connections.remove(gameID, playerName, type);
             return;
         }
-
         if (playerName == null) {
             String zeroMessage = "Error: Invalid authToken";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
@@ -148,19 +143,14 @@ public class WebSocketHandler {
             connections.remove(gameID, playerName, type);
             return;
         }
-
         var newNotification = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
         newNotification.setMessage("loading game");
         newNotification.setGame(chessGame);
         connections.sendToUser(gameID, newNotification, playerName, session);
-
         String message = String.format("%s is in the game as %s, %s teams turn", playerName, action.getPlayerColor(), chessGame.getTeamTurn());
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         notification.setMessage(message);
         connections.broadcast(gameID, notification, playerName, false);
-
-
-
         services.returnChessGame(gameID, chessGame);
     }
 

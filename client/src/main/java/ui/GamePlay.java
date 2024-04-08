@@ -26,6 +26,7 @@ public class GamePlay extends Endpoint{
 
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
 
+            @Override
             public void onMessage(String message) {
                 ServerMessage action = new Gson().fromJson(message, ServerMessage.class);
                 switch (action.getServerMessageType()) {
@@ -40,7 +41,7 @@ public class GamePlay extends Endpoint{
     public void send(String msg) throws Exception {
         this.session.getBasicRemote().sendText(msg);
     }
-
+    @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 

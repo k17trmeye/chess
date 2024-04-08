@@ -415,7 +415,6 @@ public class Repl {
                         System.out.print("[GAMEPLAY] >>> ");
                         continue; // Prompt user again
                     }
-
                     String currPosition = parts[1];
                     if (currPosition.length() != 2) {
                         System.out.println("Invalid format. Correct format: move <currRow currCol newRow newCol>, example: 'move 7a5a'\n");
