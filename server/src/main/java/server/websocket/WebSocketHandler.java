@@ -258,7 +258,7 @@ public class WebSocketHandler {
             one.setErrorMessage(oneMessage);
             connections.sendToUser(gameID, one, playerName, session);
         } else {
-            String twoMessage = "Error: Not your turn, waiting for opposing player";
+            String twoMessage = "Error: Not your turn";
             var two = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             two.setErrorMessage(twoMessage);
             connections.sendToUser(gameID, two, playerName, session);

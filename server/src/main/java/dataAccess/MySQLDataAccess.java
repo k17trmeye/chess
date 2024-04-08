@@ -404,21 +404,7 @@ public class MySQLDataAccess implements DataAccess{
             boolean gameTableExists = doesTableExist(conn, "gameData");
             boolean authTableExists = doesTableExist(conn, "authData");
             boolean userTableExists = doesTableExist(conn, "userData");
-//             Used to clear DB
-//            var newStatement = "DROP TABLE IF EXISTS gameData";
-//            try (var preparedStatement = conn.prepareStatement(newStatement)) {
-//                preparedStatement.executeUpdate();
-//            }
-//            newStatement = "DROP TABLE IF EXISTS userData";
-//            try (var preparedStatement = conn.prepareStatement(newStatement)) {
-//                preparedStatement.executeUpdate();
-//            }
-//            newStatement = "DROP TABLE IF EXISTS authData";
-//            try (var preparedStatement = conn.prepareStatement(newStatement)) {
-//                preparedStatement.executeUpdate();
-//            }
 
-            // Used to create DB
             if (!userTableExists) {
                 System.out.println("creating userDB");
                 for (var statement : createUserDB) {

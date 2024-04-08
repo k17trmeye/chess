@@ -45,7 +45,6 @@ public class GamePlay extends Endpoint{
     }
 
     public void notifyPlayer(ServerMessage action) {
-        System.out.println("");
         System.out.println(action.getMessage());
         System.out.println();
         System.out.print("[GAMEPLAY] >>> ");
@@ -119,14 +118,7 @@ public class GamePlay extends Endpoint{
     public void loadBoard(ServerMessage action) {
         ChessGame chessGame = action.getGame();
         recentGame = chessGame;
-        if (currColor == null) {
-            ChessBoardUIBlack.main(chessGame);
-        } else if (currColor.toLowerCase().contains("white")) {
-            ChessBoardUIBlack.main(chessGame);
-        } else if (currColor.toLowerCase().contains("black")) {
-            ChessBoardUIWhite.main(chessGame);
-        }
-
+        ChessBoardUIBlack.main(chessGame, currColor);
     }
 
     public boolean checkGame() {
@@ -145,13 +137,7 @@ public class GamePlay extends Endpoint{
 
     public void redrawBoard() {
         System.out.println();
-        if (currColor == null) {
-            ChessBoardUIBlack.main(recentGame);
-        } else if (currColor.equalsIgnoreCase("white")) {
-            ChessBoardUIBlack.main(recentGame);
-        } else if (currColor.equalsIgnoreCase("black")) {
-            ChessBoardUIWhite.main(recentGame);
-        }
+        ChessBoardUIBlack.main(recentGame, currColor);
         System.out.print("[GAMEPLAY] >>> ");
     }
 
@@ -167,13 +153,7 @@ public class GamePlay extends Endpoint{
         }
 
         if (!coordinatesList.isEmpty()) {
-            if (currColor.equalsIgnoreCase("white")) {
-                ChessBoardUIBlack.showMoves(recentGame, coordinatesList);
-            } else if (currColor.equalsIgnoreCase("black")) {
-                ChessBoardUIWhite.showMoves(recentGame, coordinatesList);
-            } else {
-                ChessBoardUIBlack.showMoves(recentGame, coordinatesList);
-            }
+            ChessBoardUIBlack.showMoves(recentGame, coordinatesList, currColor);
         } else {
             System.out.println("No moves available");
         }

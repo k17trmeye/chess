@@ -52,10 +52,10 @@ public class UserGameCommand {
     public void setPlayerColor(String color) {
         if (color == null) {
             this.playerColor = null;
-        } else if (color.toLowerCase().equals("black")) {
+        } else if (color.toLowerCase().contains("black")) {
             this.playerColor = ChessGame.TeamColor.BLACK;
         }
-        else if (color.toLowerCase().equals("white")) {
+        else if (color.toLowerCase().contains("white")) {
             this.playerColor = ChessGame.TeamColor.WHITE;
         }
     }

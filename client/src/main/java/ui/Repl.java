@@ -2,11 +2,8 @@ package ui;
 
 import java.io.IOException;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
-import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import com.google.gson.Gson;
@@ -46,7 +43,6 @@ public class Repl {
                     System.out.println("register <USERNAME> <PASSWORD> <EMAIL> - to create an account\n" +
                             "login <USERNAME> <PASSWORD> - to play chess\n" +
                             "quit - to leave UI\n" +
-                            "clear - to clear userDB\n" +
                             "help - list possible commands\n");
                     System.out.print("[LOGGED OUT] >>> ");
                     break;
@@ -244,7 +240,7 @@ public class Repl {
                             game = new GamePlay();
                             game.joinGame(authToken, currPlayerColor, newgameID, userName);
 
-                            GameUI();
+                            gameUI();
 
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
@@ -254,7 +250,7 @@ public class Repl {
                             game = new GamePlay();
                             game.joinGame(authToken, currPlayerColor, newgameID, userName);
 
-                            GameUI();
+                            gameUI();
 
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
@@ -296,7 +292,7 @@ public class Repl {
                         newgameID = observeNewGame;
                         game = new GamePlay();
                         game.joinObserver(authToken, currPlayerColor, newgameID, userName);
-                        GameUI();
+                        gameUI();
 
                         System.out.print("[LOGGED IN] >>> ");
                         continue;
@@ -321,29 +317,22 @@ public class Repl {
     }
 
 
-    public void GameUI() throws IOException, Exception {
-
-        // Trim whitespace and convert to lowercase
+    public void gameUI() throws IOException, Exception {
         boolean running = true;
-
         while (running) {
-
             if (game.checkGame()) {
                 game.resignPlayer(authToken, newgameID, userName);
                 System.out.println("You lost, ending game\n");
                 running = false;
                 continue;
             }
-
             String command = scanner.nextLine().trim();
-
-            String[] parts = command.split("\\s+"); // Split input by whitespace
+            String[] parts = command.split("\\s+");
             if (parts.length == 0) {
                 System.out.println("Invalid command, type help to get started.");
                 System.out.print("[GAMEPLAY] >>> ");
-                continue; // Prompt user again
+                continue;
             }
-
             switch (parts[0]) {
                 case "help":
                     System.out.println("redraw - to redraw the chessboard\n" +
@@ -380,7 +369,6 @@ public class Repl {
                         continue; // Prompt user again
                     }
                     int currRow = 0, currCol = 0, newRow = 0, newCol = 0;
-
                     for (int i = 0; i < 4; i++) {
                         if (i == 0) {
                             if (Character.isDigit(chessMove.charAt(i))) {
@@ -396,13 +384,11 @@ public class Repl {
                             newCol = chessMove.charAt(i) - 'a' + 1;
                         }
                     }
-
                     if (newRow == 0 || newCol == 0 || currRow == 0 || currCol == 0) {
                         System.out.println("Invalid row/col. Correct format: move <currRow currCol newRow newCol>\n");
                         System.out.print("[GAMEPLAY] >>> ");
                         continue;
                     }
-
                     ChessPosition currPos = new ChessPosition(currRow, currCol);
                     ChessPosition newPos = new ChessPosition(newRow, newCol);
                     ChessMove newMove = new ChessMove(currPos, newPos, null);
@@ -437,7 +423,6 @@ public class Repl {
                         continue; // Prompt user again
                     }
                     int currentRow = 0, currentCol = 0;
-
                     for (int i = 0; i < 2; i++) {
                         if (i == 0) {
                             if (Character.isDigit(currPosition.charAt(i))) {
@@ -447,17 +432,13 @@ public class Repl {
                             currentCol = currPosition.charAt(i) - 'a' + 1;
                         }
                     }
-
                     if (currentRow == 0 || currentCol == 0) {
                         System.out.println("Invalid row/col. Correct format: move <currRow currCol newRow newCol>\n");
                         System.out.print("[GAMEPLAY] >>> ");
                         continue;
                     }
-
                     ChessPosition currPiece = new ChessPosition(currentRow, currentCol);
-
                     game.showMoves(currPiece);
-
                     System.out.print("\n[GAMEPLAY] >>> ");
                     break;
                 default:
