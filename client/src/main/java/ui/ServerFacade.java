@@ -176,27 +176,15 @@ public class ServerFacade {
             String requestBodyData = "{\"gameName\":\"" + gameName + "\"}";;
             requestBody.write(requestBodyData.getBytes());
         }
-
-        // Receive Response
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            // Read in the HTTP response
             InputStream responseBody = connection.getInputStream();
             String responseBodyString = readInputStream(responseBody);
-
-            // Parse to get the username and return it
             JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
             return jsonObject.get("gameID").getAsString();
         }
         else {
-            // SERVER RETURNED AN HTTP ERROR
             InputStream responseBody = connection.getErrorStream();
-
-            // Read response body from InputStream
-            String responseBodyString = readInputStream(responseBody);
-            JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
-            String message = jsonObject.get("message").getAsString();
-
-            return responseBodyString;
+            return readInputStream(responseBody);
         }
     }
 

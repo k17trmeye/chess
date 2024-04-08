@@ -55,6 +55,7 @@ public class WebSocketHandler {
         ChessGame chessGame = services.getChessGame(gameID);
         connections.add(gameID, session, playerName, chessGame, false);
         if (!Objects.equals(services.getPlayerColor(teamColor.toString(), gameID), playerName)) {
+            System.out.println("1");
             String zeroMessage = "Error: Invalid request";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             zero.setErrorMessage(zeroMessage);
@@ -63,6 +64,7 @@ public class WebSocketHandler {
             return;
         }
         if (playerName == null) {
+            System.out.println("2");
             String zeroMessage = "Error: Invalid authToken";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             zero.setErrorMessage(zeroMessage);
@@ -71,6 +73,7 @@ public class WebSocketHandler {
             return;
         }
         if (authToken == null) {
+            System.out.println("3");
             String oneMessage = "Error: Invalid authToken";
             var one = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             one.setErrorMessage(oneMessage);
@@ -79,59 +82,11 @@ public class WebSocketHandler {
             return;
         }
         if (gameID == 0) {
+            System.out.println("4");
             String twoMessage = "Error: Invalid gameID";
             var two = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             two.setErrorMessage(twoMessage);
             connections.sendToUser(gameID, two, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
-        if (services.getChessGame(gameID) == null) {
-            String sixMessage = "Error: Invalid gameID";
-            var six = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            six.setErrorMessage(sixMessage);
-            connections.sendToUser(gameID, six, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
-        if (services.getChessGame(gameID).getTeamTurn() == null) {
-            String sixMessage = "Error: Player Resigned";
-            var six = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            six.setErrorMessage(sixMessage);
-            connections.sendToUser(gameID, six, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
-        if (services.getToken(playerName) == authToken) {
-            String threeMessage = "Error: Invalid authToken";
-            var three = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            three.setErrorMessage(threeMessage);
-            connections.sendToUser(gameID, three, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
-        if (Objects.equals(services.getPlayerColor(testColor.toString(), gameID), playerName)) {
-            String fourMessage = "Error: Wrong playerColor";
-            var four = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            four.setErrorMessage(fourMessage);
-            connections.sendToUser(gameID, four, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
-
-        if (services.getPlayerColor(teamColor.toString(), gameID) == null) {
-            String fourMessage = "Error: Invalid playerColor";
-            var four = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            four.setErrorMessage(fourMessage);
-            connections.sendToUser(gameID, four, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
-        if (!Objects.equals(services.getGame(gameID), gameID)) {
-            String fiveMessage = "Error: Invalid gameID";
-            var five = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            five.setErrorMessage(fiveMessage);
-            connections.sendToUser(gameID, five, playerName, session);
             connections.remove(gameID, playerName, type);
             return;
         }

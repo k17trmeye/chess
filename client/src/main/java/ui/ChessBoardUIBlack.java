@@ -226,7 +226,7 @@ public class ChessBoardUIBlack {
                     for (int[] coordinate : moves) {
                         int row =coordinate[0];
                         int col = coordinate[1];
-                        if (row == (boardRow + 1)&& col == (boardCol + 1)) {
+                        if (row == (boardRow + 1) && col == (boardCol + 1)) {
                             green = true;
                             setGreen(out);
                             break;
@@ -269,28 +269,28 @@ public class ChessBoardUIBlack {
         }
     }
     private static void drawMovesBlack(PrintStream out, List<int[]> list) {
-        for (int boardRow = 0; boardRow < BOARD_SIZE_IN_SQUARES; ++boardRow) {
+        for (int i2 = 0; i2 < BOARD_SIZE_IN_SQUARES; ++i2) {
             alternate = !alternate;
-            for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
-                if (squareRow == 1) {
-                    Integer newRow = boardRow + 1;
+            for (int i1 = 0; i1 < SQUARE_SIZE_IN_CHARS; ++i1) {
+                if (i1 == 1) {
+                    Integer newRow = i2 + 1;
                     printRowNum(out, newRow.toString() + " ");
                 }
                 else {
                     printRowNum(out, "  ");
                 }
-                for (int boardCol = BOARD_SIZE_IN_SQUARES - 1; boardCol >= 0; --boardCol) {
-                    boolean green = false;
+                for (int i = BOARD_SIZE_IN_SQUARES - 1; i >= 0; --i) {
+                    boolean b = false;
                     for (int[] ints : list) {
-                        int row =ints[0];
-                        int col = ints[1];
-                        if (row == (boardRow + 1)&& col == (boardCol + 1)) {
-                            green = true;
+                        int anInt =ints[0];
+                        int anInt1 = ints[1];
+                        if (anInt == (i2 + 1)&& anInt1 == (i + 1)) {
+                            b = true;
                             setGreen(out);
                             break;
                         }
                     }
-                    if (!green) {
+                    if (!b) {
                         if (alternate) {
                             setBlack(out);
                         } else {
@@ -298,21 +298,22 @@ public class ChessBoardUIBlack {
                         }
                     }
                     alternate = !alternate;
-                    if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
+                    if (i1 == SQUARE_SIZE_IN_CHARS / 2) {
                         int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
                         int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
-                        drawPlayerWhite(boardRow, boardCol, out, prefixLength, suffixLength);
+                        // Drawing players
+                        drawPlayerWhite(i2, i, out, prefixLength, suffixLength);
                     }
                     else {
                         out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
                     }
-                    if (boardCol < BOARD_SIZE_IN_SQUARES) {
+                    if (i < BOARD_SIZE_IN_SQUARES) {
                         out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
                     }
                     out.print("\u001B[0m");
                 }
-                if (squareRow == 1) {
-                    Integer newRow = boardRow + 1;
+                if (i1 == 1) {
+                    Integer newRow = i2 + 1;
                     printRowNum(out, " " + newRow.toString());
                 }
                 else {
@@ -320,7 +321,7 @@ public class ChessBoardUIBlack {
                 }
                 out.println();
             }
-            if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+            if (i2 < BOARD_SIZE_IN_SQUARES - 1) {
                 setBlack(out);
             }
         }
