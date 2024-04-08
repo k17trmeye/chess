@@ -22,7 +22,6 @@ public class Repl {
 
     public Repl(Integer port) throws IOException {
         serverFacade = new ServerFacade(port);
-//        serverFacade.clear();
     }
 
     public void preLoginUI() throws Exception {
@@ -333,7 +332,9 @@ public class Repl {
                 game.resignPlayer(authToken, newgameID, userName);
                 System.out.println("You lost, ending game\n");
                 running = false;
+                continue;
             }
+
             String command = scanner.nextLine().trim();
 
             String[] parts = command.split("\\s+"); // Split input by whitespace
@@ -406,7 +407,6 @@ public class Repl {
                     ChessPosition newPos = new ChessPosition(newRow, newCol);
                     ChessMove newMove = new ChessMove(currPos, newPos, null);
                     game.makeMove(authToken, newgameID, currPlayerColor, newMove, userName);
-                    System.out.print("[GAMEPLAY] >>> ");
                     break;
                 case "resign":
                     if (currPlayerColor == null) {

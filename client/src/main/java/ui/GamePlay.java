@@ -133,10 +133,12 @@ public class GamePlay extends Endpoint{
         if (recentGame == null) {
             return false;
         }
-        if (currColor.toLowerCase().contains("white")) {
-            return recentGame.isInCheck(ChessGame.TeamColor.WHITE);
-        } else if (currColor.toLowerCase().contains("black")) {
-            return recentGame.isInCheck(ChessGame.TeamColor.BLACK);
+        if (currColor != null) {
+            if (currColor.toLowerCase().contains("white")) {
+                return recentGame.isInCheck(ChessGame.TeamColor.WHITE);
+            } else if (currColor.toLowerCase().contains("black")) {
+                return recentGame.isInCheck(ChessGame.TeamColor.BLACK);
+            }
         }
         return false;
     }
