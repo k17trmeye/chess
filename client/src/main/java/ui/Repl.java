@@ -119,7 +119,7 @@ public class Repl {
             if (parts.length == 0) {
                 System.out.println("Invalid command, type help to get started.");
                 System.out.print("[LOGGED IN] >>> ");
-                continue; // Prompt user again
+                continue;
             }
             switch (parts[0]) {
                 case "help":
@@ -136,7 +136,7 @@ public class Repl {
                     if (parts.length != 2) {
                         System.out.println("Invalid format. Correct format: create <GAMENAME>\n");
                         System.out.print("[LOGGED IN] >>> ");
-                        continue; // Prompt user again
+                        continue;
                     }
                     String gameName = parts[1];
                     var create = serverFacade.createGame(authToken, gameName);
@@ -144,36 +144,33 @@ public class Repl {
                         int gameID = Integer.parseInt(create);
                         System.out.println("Game created, gameID: " + gameID + "\n");
                         System.out.print("[LOGGED IN] >>> ");
-                    }
-                    else {
+                    } else {
                         System.out.println("Error creating game\n");
                         System.out.print("[LOGGED IN] >>> ");
                     }
                     break;
                 case "list":
                     String games = serverFacade.listGames(authToken).toString();
-                    if (!games.toString().contains("Error")) {
+                    if (!games.contains("Error")) {
                         Gson gson = new Gson();
                         GameList gameList = gson.fromJson(games, GameList.class);
                         if (gameList.games.length == 0) {
                             System.out.println("No games created \n");
                         } else {
                             System.out.println("Games: ");
-                            for (String gameObject : games.substring(games.indexOf("["), games.indexOf("]") + 1)
+                            for (String gameObject : games.substring(games.indexOf("[") + 1, games.indexOf("]"))
                                     .split("\\},\\{")) {
                                 gameObject = gameObject.replace("{", "").replace("}", "");
                                 gameObject = gameObject.replace("[", "").replace("]", "");
                                 int gameID = -1;
                                 String newGame = "", blackPlayer = null, whitePlayer = null;
                                 String[] pairs = gameObject.split(",");
-                                for (int i = 0; i < pairs.length; ++i) {
-                                    String pair = pairs[i];
+                                for (String pair : pairs) {
                                     String[] split = pair.split(":");
                                     String key = split[0].trim(), value = split[1].trim();
                                     if (key.contains("gameID")) gameID = Integer.parseInt(value);
-                                    else if (key.contains("gameName")) {
-                                        newGame = value.substring(1, value.length() - 1);
-                                    } else if (key.contains("blackUsername")) blackPlayer = value.substring(1, value.length() - 1);
+                                    else if (key.contains("gameName")) newGame = value.substring(1, value.length() - 1);
+                                    else if (key.contains("blackUsername")) blackPlayer = value.substring(1, value.length() - 1);
                                     else if (key.contains("whiteUsername")) whitePlayer = value.substring(1, value.length() - 1);
                                 }
                                 System.out.println("\tGame ID: " + gameID);
@@ -184,8 +181,7 @@ public class Repl {
                             }
                         }
                         System.out.print("[LOGGED IN] >>> ");
-                    }
-                    else {
+                    } else {
                         System.out.println("No games available\n");
                         System.out.print("[LOGGED IN] >>> ");
                     }
@@ -194,37 +190,25 @@ public class Repl {
                     if (parts.length != 3) {
                         System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK>\n");
                         System.out.print("[LOGGED IN] >>> ");
-                        continue; // Prompt user again
+                        continue;
                     }
-                    String gameID = parts[1];
-                    String playerColor = parts[2];
+                    String gameID = parts[1], playerColor = parts[2];
                     Integer newGame = Integer.parseInt(gameID);
                     newgameID = newGame;
                     var joined = serverFacade.joinGame(authToken, playerColor, newGame.toString());
                     if (!joined.toString().contains("Error")) {
-                        if (playerColor.toLowerCase().equals("black")) {
+                        if (playerColor.toLowerCase().contains("black") || playerColor.toLowerCase().contains("white")) {
                             System.out.println("Game Joined\n");
                             currPlayerColor = playerColor.toLowerCase();
                             game = new GamePlay();
                             game.joinGame(authToken, currPlayerColor, newgameID, userName);
                             gameUI();
                             System.out.print("[LOGGED IN] >>> ");
-                            continue;
-                        } else if (playerColor.toLowerCase().contains("white")) {
-                            System.out.println("Game Joined\n");
-                            currPlayerColor = playerColor.toLowerCase();
-                            game = new GamePlay();
-                            game.joinGame(authToken, currPlayerColor, newgameID, userName);
-                            gameUI();
-                            System.out.print("[LOGGED IN] >>> ");
-                            continue;
                         } else {
                             System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK>\n");
                             System.out.print("[LOGGED IN] >>> ");
-                            continue;
                         }
-                    }
-                    else {
+                    } else {
                         System.out.println("Error joining game\n");
                         System.out.print("[LOGGED IN] >>> ");
                     }
@@ -233,11 +217,10 @@ public class Repl {
                     if (parts.length != 2) {
                         System.out.println("Invalid format. Correct format: observe <GAMEID>\n");
                         System.out.print("[LOGGED IN] >>> ");
-                        continue; // Prompt user again
+                        continue;
                     }
                     String observeGameID = parts[1];
-                    int observeNewGame = 0;
-                    observeNewGame = Integer.parseInt(observeGameID);
+                    int observeNewGame = Integer.parseInt(observeGameID);
                     if (observeNewGame == 0) {
                         System.out.println("Invalid format. Correct format: observe <GAMEID>\n");
                         System.out.print("[LOGGED IN] >>> ");
@@ -252,7 +235,6 @@ public class Repl {
                         game.joinObserver(authToken, currPlayerColor, newgameID, userName);
                         gameUI();
                         System.out.print("[LOGGED IN] >>> ");
-                        continue;
                     } else {
                         System.out.println("Error joining observer\n");
                         System.out.print("[LOGGED IN] >>> ");
@@ -314,34 +296,14 @@ public class Repl {
                         System.out.print("[GAMEPLAY] >>> ");
                         continue;
                     }
-                    if (parts.length != 2) {
+                    if (parts.length != 2 || parts[1].length() != 4) {
                         System.out.println("Invalid format. Correct format: move <currRow currCol newRow newCol>, example: 'move 7a5a'\n");
                         System.out.print("[GAMEPLAY] >>> ");
                         continue; // Prompt user again
                     }
-                    String chessMove = parts[1];
-                    if (chessMove.length() != 4) {
-                        System.out.println("Invalid format. Correct format: move <currRow currCol newRow newCol>, example: 'move 7a5a'\n");
-                        System.out.print("[GAMEPLAY] >>> ");
-                        continue; // Prompt user again
-                    }
-                    int currRow = 0, currCol = 0, newRow = 0, newCol = 0;
-                    for (int i = 0; i < 4; i++) {
-                        if (i == 0) {
-                            if (Character.isDigit(chessMove.charAt(i))) {
-                                currRow = Character.getNumericValue(chessMove.charAt(i));
-                            }
-                        } else if (i == 1) {
-                            currCol = chessMove.charAt(i) - 'a' + 1;
-                        } else if (i == 2) {
-                            if (Character.isDigit(chessMove.charAt(i))) {
-                                newRow = Character.getNumericValue(chessMove.charAt(i));
-                            }
-                        } else if (i == 3) {
-                            newCol = chessMove.charAt(i) - 'a' + 1;
-                        }
-                    }
-                    if (newRow == 0 || newCol == 0 || currRow == 0 || currCol == 0) {
+                    int currRow = parts[1].charAt(0) - '0', currCol = parts[1].charAt(1) - 'a' + 1,
+                            newRow = parts[1].charAt(2) - '0', newCol = parts[1].charAt(3) - 'a' + 1;
+                    if (currRow < 1 || currRow > 8 || currCol < 1 || currCol > 8 || newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
                         System.out.println("Invalid row/col. Correct format: move <currRow currCol newRow newCol>\n");
                         System.out.print("[GAMEPLAY] >>> ");
                         continue;
@@ -367,28 +329,13 @@ public class Repl {
                         System.out.print("[GAMEPLAY] >>> ");
                         continue;
                     }
-                    if (parts.length != 2) {
+                    if (parts.length != 2 || parts[1].length() != 2) {
                         System.out.println("Invalid format. Correct format: show <currRow currCol>, example: 'show 7a'\n");
                         System.out.print("[GAMEPLAY] >>> ");
                         continue; // Prompt user again
                     }
-                    String currPosition = parts[1];
-                    if (currPosition.length() != 2) {
-                        System.out.println("Invalid format. Correct format: move <currRow currCol newRow newCol>, example: 'move 7a5a'\n");
-                        System.out.print("[GAMEPLAY] >>> ");
-                        continue; // Prompt user again
-                    }
-                    int currentRow = 0, currentCol = 0;
-                    for (int i = 0; i < 2; i++) {
-                        if (i == 0) {
-                            if (Character.isDigit(currPosition.charAt(i))) {
-                                currentRow = Character.getNumericValue(currPosition.charAt(i));
-                            }
-                        } else if (i == 1) {
-                            currentCol = currPosition.charAt(i) - 'a' + 1;
-                        }
-                    }
-                    if (currentRow == 0 || currentCol == 0) {
+                    int currentRow = parts[1].charAt(0) - '0', currentCol = parts[1].charAt(1) - 'a' + 1;
+                    if (currentRow < 1 || currentRow > 8 || currentCol < 1 || currentCol > 8) {
                         System.out.println("Invalid row/col. Correct format: move <currRow currCol newRow newCol>\n");
                         System.out.print("[GAMEPLAY] >>> ");
                         continue;
@@ -403,6 +350,7 @@ public class Repl {
             }
         }
     }
+
 
 
     class GameList {

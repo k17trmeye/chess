@@ -144,7 +144,8 @@ public class WebSocketHandler {
     }
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, DataAccessException, InvalidMoveException {
-        ChessGame.TeamColor playerColor = null;
+        ChessGame.TeamColor playerColor = action.getPlayerColor();
+        System.out.println(playerColor);
         String playerName = action.getUser();
         String authToken = action.getAuthString();
         Integer gameID = action.getGameID();
@@ -153,11 +154,21 @@ public class WebSocketHandler {
         String testUsername = services.getUsername(authToken);
         ChessGame.TeamColor currColor = services.getChessGame(gameID).getTeamTurn();
 
-        if (services.getPlayerColor("WHITE", gameID).toLowerCase().contains(testUsername)) {
-            playerColor = ChessGame.TeamColor.WHITE;
-        } else if (services.getPlayerColor("BLACK", gameID).toLowerCase().contains(testUsername)) {
-            playerColor = ChessGame.TeamColor.BLACK;
+        if (playerColor == null) {
+            if (services.getPlayerColor("BLACK", gameID) == null || services.getPlayerColor("WHITE", gameID) == null) {
+                String fourMessage = "Error: Not your turn";
+                var four = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                four.setErrorMessage(fourMessage);
+                connections.sendToUser(gameID, four, playerName, session);
+                return;
+            }
+            if (services.getPlayerColor("BLACK", gameID).toLowerCase().contains(testUsername)) {
+                playerColor = ChessGame.TeamColor.BLACK;
+            } else if (services.getPlayerColor("WHITE", gameID).toLowerCase().contains(testUsername)) {
+                playerColor = ChessGame.TeamColor.WHITE;
+            }
         }
+
         ChessGame chessGame = null;
         if (currColor == playerColor) {
             Collection<ChessMove> moves = services.getChessGame(gameID).validMoves(move.getStartPosition());
@@ -178,7 +189,7 @@ public class WebSocketHandler {
                             notification.setGame(chessGame);
                             connections.broadcast(gameID, notification, testUsername, true);
 
-                            String newMessage = String.format("%s has made move", playerName);
+                            String newMessage = String.format("%s has made a move", playerName);
                             var newNotification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
                             newNotification.setMessage(newMessage);
                             newNotification.setGame(chessGame);

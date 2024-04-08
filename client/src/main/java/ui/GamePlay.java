@@ -139,7 +139,6 @@ public class GamePlay extends Endpoint{
     public void redrawBoard() {
         System.out.println();
         ChessBoardUIBlack.main(recentGame, currColor);
-        System.out.print("[GAMEPLAY] >>> ");
     }
 
     public void showMoves(ChessPosition pos) {
