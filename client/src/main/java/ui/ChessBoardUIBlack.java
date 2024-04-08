@@ -211,22 +211,22 @@ public class ChessBoardUIBlack {
     }
 
     private static void drawMovesWhite(PrintStream out, List<int[]> moves) {
-        for (int boardRow = BOARD_SIZE_IN_SQUARES - 1; boardRow >= 0 ; --boardRow) {
+        for (int i4 = BOARD_SIZE_IN_SQUARES - 1; i4 >= 0 ; --i4) {
             alternate = !alternate;
-            for (int squareRow = 0; squareRow < SQUARE_SIZE_IN_CHARS; ++squareRow) {
-                if (squareRow == 1) {
-                    Integer newRow = boardRow + 1;
+            for (int i = 0; i < SQUARE_SIZE_IN_CHARS; ++i) {
+                if (i == 1) {
+                    Integer newRow = i4 + 1;
                     printRowNum(out, newRow.toString() + " ");
                 }
                 else {
                     printRowNum(out, "  ");
                 }
-                for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
+                for (int i3 = 0; i3 < BOARD_SIZE_IN_SQUARES; ++i3) {
                     boolean green = false;
                     for (int[] coordinate : moves) {
                         int row =coordinate[0];
                         int col = coordinate[1];
-                        if (row == (boardRow + 1) && col == (boardCol + 1)) {
+                        if (row == (i4 + 1) && col == (i3 + 1)) {
                             green = true;
                             setGreen(out);
                             break;
@@ -240,22 +240,22 @@ public class ChessBoardUIBlack {
                         }
                     }
                     alternate = !alternate;
-                    if (squareRow == SQUARE_SIZE_IN_CHARS / 2) {
-                        int prefixLength = SQUARE_SIZE_IN_CHARS / 2;
-                        int suffixLength = SQUARE_SIZE_IN_CHARS - prefixLength - 1;
+                    if (i == SQUARE_SIZE_IN_CHARS / 2) {
+                        int i1 = SQUARE_SIZE_IN_CHARS / 2;
+                        int i2 = SQUARE_SIZE_IN_CHARS - i1 - 1;
 
-                        drawPlayerWhite(boardRow, boardCol, out, prefixLength, suffixLength);
+                        drawPlayerWhite(i4, i3, out, i1, i2);
                     }
                     else {
                         out.print(EMPTY.repeat(SQUARE_SIZE_IN_CHARS));
                     }
-                    if (boardCol < BOARD_SIZE_IN_SQUARES) {
+                    if (i3 < BOARD_SIZE_IN_SQUARES) {
                         out.print(EMPTY.repeat(LINE_WIDTH_IN_CHARS));
                     }
                     out.print("\u001B[0m");
                 }
-                if (squareRow == 1) {
-                    Integer newRow = boardRow + 1;
+                if (i == 1) {
+                    Integer newRow = i4 + 1;
                     printRowNum(out, " " + newRow.toString());
                 }
                 else {
@@ -263,7 +263,7 @@ public class ChessBoardUIBlack {
                 }
                 out.println();
             }
-            if (boardRow < BOARD_SIZE_IN_SQUARES - 1) {
+            if (i4 < BOARD_SIZE_IN_SQUARES - 1) {
                 setBlack(out);
             }
         }

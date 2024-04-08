@@ -115,7 +115,7 @@ public class Repl {
         boolean running = true;
         while (running) {
             String command = scanner.nextLine().trim();
-            String[] parts = command.split("\\s+"); // Split input by whitespace
+            String[] parts = command.split("\\s+");
             if (parts.length == 0) {
                 System.out.println("Invalid command, type help to get started.");
                 System.out.print("[LOGGED IN] >>> ");
@@ -155,54 +155,31 @@ public class Repl {
                     if (!games.toString().contains("Error")) {
                         Gson gson = new Gson();
                         GameList gameList = gson.fromJson(games, GameList.class);
-                        int numGameIDs = gameList.games.length;
-                        if (numGameIDs == 0) {
+                        if (gameList.games.length == 0) {
                             System.out.println("No games created \n");
                         } else {
                             System.out.println("Games: ");
-                            int gamesStartIndex = games.indexOf("[");
-                            int gamesEndIndex = games.indexOf("]", gamesStartIndex);
-                            String gamesArrayString = games.substring(gamesStartIndex, gamesEndIndex + 1);
-                            String[] gameObjects = gamesArrayString.split("\\},\\{");
-
-                            for (int i = 0; i < gameObjects.length; i++) {
-                                String gameObject = gameObjects[i];
+                            for (String gameObject : games.substring(games.indexOf("["), games.indexOf("]") + 1)
+                                    .split("\\},\\{")) {
                                 gameObject = gameObject.replace("{", "").replace("}", "");
-                                String[] keyValuePairs = gameObject.split(",");
+                                gameObject = gameObject.replace("[", "").replace("]", "");
                                 int gameID = -1;
-                                String newGame = "";
-                                String blackPlayer = null;
-                                String whitePlayer = null;
-                                for (String pair : keyValuePairs) {
-                                    String[] newparts = pair.split(":");
-                                    String key = newparts[0].trim();
-                                    String value = newparts[1].trim();
-                                    if (key.contains("gameID")) {
-                                        gameID = Integer.parseInt(value);
-                                    } else if (key.contains("gameName")) {
-                                        if (i == gameObjects.length - 1) {
-                                            newGame = value.substring(1, value.length() - 2);
-                                        } else {
-                                            newGame = value.substring(1, value.length() - 1);
-                                        }
-                                    } else if (key.contains("blackUsername")) {
-                                        blackPlayer = value.substring(1, value.length() - 1); // Remove surrounding quotes
-                                    } else if (key.contains("whiteUsername")) {
-                                        whitePlayer = value.substring(1, value.length() - 1); // Remove surrounding quotes
-                                    }
+                                String newGame = "", blackPlayer = null, whitePlayer = null;
+                                String[] pairs = gameObject.split(",");
+                                for (int i = 0; i < pairs.length; ++i) {
+                                    String pair = pairs[i];
+                                    String[] split = pair.split(":");
+                                    String key = split[0].trim(), value = split[1].trim();
+                                    if (key.contains("gameID")) gameID = Integer.parseInt(value);
+                                    else if (key.contains("gameName")) {
+                                        newGame = value.substring(1, value.length() - 1);
+                                    } else if (key.contains("blackUsername")) blackPlayer = value.substring(1, value.length() - 1);
+                                    else if (key.contains("whiteUsername")) whitePlayer = value.substring(1, value.length() - 1);
                                 }
                                 System.out.println("\tGame ID: " + gameID);
                                 System.out.println("\tGame Name: " + newGame);
-                                if (blackPlayer == null) {
-                                    System.out.println("\tBlack Player: none");
-                                } else {
-                                    System.out.println("\tBlack Player: " + blackPlayer);
-                                }
-                                if (whitePlayer == null) {
-                                    System.out.println("\tWhite Player: none");
-                                } else {
-                                    System.out.println("\tWhite Player: " + whitePlayer);
-                                }
+                                System.out.println("\tBlack Player: " + (blackPlayer != null ? blackPlayer : "none"));
+                                System.out.println("\tWhite Player: " + (whitePlayer != null ? whitePlayer : "none"));
                                 System.out.println();
                             }
                         }
@@ -233,7 +210,7 @@ public class Repl {
                             gameUI();
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
-                        } else if (playerColor.toLowerCase().equals("white")) {
+                        } else if (playerColor.toLowerCase().contains("white")) {
                             System.out.println("Game Joined\n");
                             currPlayerColor = playerColor.toLowerCase();
                             game = new GamePlay();
