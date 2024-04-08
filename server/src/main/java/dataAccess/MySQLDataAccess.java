@@ -51,21 +51,20 @@ public class MySQLDataAccess implements DataAccess{
         }
         return null;
     }
-
     @Override
     public String getAuthToken(String username) throws DataAccessException {
-        String authToken = newAuthToken();
-        try (var conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO authData (username, authToken) VALUES (?, ?)";
-            try (var preparedStatement = conn.prepareStatement(statement)) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, authToken);
-                preparedStatement.executeUpdate();
+        String newAuthToken = newAuthToken();
+        try (var connection = DatabaseManager.getConnection()) {
+            var string = "INSERT INTO authData (username, authToken) VALUES (?, ?)";
+            try (var statement = connection.prepareStatement(string)) {
+                statement.setString(1, username);
+                statement.setString(2, newAuthToken);
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return authToken;
+        return newAuthToken;
     }
 
     @Override

@@ -102,14 +102,6 @@ public class WebSocketHandler {
             connections.remove(gameID, playerName, type);
             return;
         }
-        if (services.getChessGame(gameID).getTeamTurn() == null) {
-            String sixMessage = "Error: Player Resigned";
-            var six = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            six.setErrorMessage(sixMessage);
-            connections.sendToUser(gameID, six, playerName, session);
-            connections.remove(gameID, playerName, type);
-            return;
-        }
         if (services.getToken(playerName) == authToken) {
             String threeMessage = "Error: Invalid authToken";
             var three = new ServerMessage(ServerMessage.ServerMessageType.ERROR);

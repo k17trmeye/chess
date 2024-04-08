@@ -99,40 +99,20 @@ public class ServerFacade {
     }
 
     public Object logoutUser(String authToken) throws IOException{
-        // Set up URL
         String urlAddr = urlStr + "session";
         URL url = new URL(urlAddr);
-
-        // Set up HTTP connection
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.setDoOutput(true);
-
-        // Add header
         connection.addRequestProperty("authorization", authToken);
-
-        // Send Request
         connection.connect();
-
-        // Receive Response
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            // Read in the HTTP response
             InputStream responseBody = connection.getInputStream();
-            String responseBodyString = readInputStream(responseBody);
-
-            // Parse to get the username and return it
-            JsonObject jsonObject = JsonParser.parseString(responseBodyString).getAsJsonObject();
-            return responseBodyString;
+            return readInputStream(responseBody);
         }
         else {
-            // SERVER RETURNED AN HTTP ERROR
             InputStream responseBody = connection.getErrorStream();
-
-            // Read response body from InputStream
-            String responseBodyString = readInputStream(responseBody);
-
-            // Return response
-            return responseBodyString;
+            return readInputStream(responseBody);
         }
     }
 

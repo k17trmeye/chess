@@ -112,20 +112,15 @@ public class Repl {
 
     public void postLoginUI() throws Exception {
         System.out.print("[LOGGED IN] >>> ");
-
-        // Trim whitespace and convert to lowercase
         boolean running = true;
-
         while (running) {
             String command = scanner.nextLine().trim();
-
             String[] parts = command.split("\\s+"); // Split input by whitespace
             if (parts.length == 0) {
                 System.out.println("Invalid command, type help to get started.");
                 System.out.print("[LOGGED IN] >>> ");
                 continue; // Prompt user again
             }
-
             switch (parts[0]) {
                 case "help":
                     System.out.println("create <GAMENAME> - to create a game\n" +
@@ -147,7 +142,6 @@ public class Repl {
                     var create = serverFacade.createGame(authToken, gameName);
                     if (!create.toString().contains("Error")) {
                         int gameID = Integer.parseInt(create);
-
                         System.out.println("Game created, gameID: " + gameID + "\n");
                         System.out.print("[LOGGED IN] >>> ");
                     }
@@ -197,7 +191,6 @@ public class Repl {
                                         whitePlayer = value.substring(1, value.length() - 1); // Remove surrounding quotes
                                     }
                                 }
-                                // Print gameID and gameName
                                 System.out.println("\tGame ID: " + gameID);
                                 System.out.println("\tGame Name: " + newGame);
                                 if (blackPlayer == null) {
@@ -230,8 +223,6 @@ public class Repl {
                     String playerColor = parts[2];
                     Integer newGame = Integer.parseInt(gameID);
                     newgameID = newGame;
-
-
                     var joined = serverFacade.joinGame(authToken, playerColor, newGame.toString());
                     if (!joined.toString().contains("Error")) {
                         if (playerColor.toLowerCase().equals("black")) {
@@ -239,9 +230,7 @@ public class Repl {
                             currPlayerColor = playerColor.toLowerCase();
                             game = new GamePlay();
                             game.joinGame(authToken, currPlayerColor, newgameID, userName);
-
                             gameUI();
-
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
                         } else if (playerColor.toLowerCase().equals("white")) {
@@ -249,9 +238,7 @@ public class Repl {
                             currPlayerColor = playerColor.toLowerCase();
                             game = new GamePlay();
                             game.joinGame(authToken, currPlayerColor, newgameID, userName);
-
                             gameUI();
-
                             System.out.print("[LOGGED IN] >>> ");
                             continue;
                         } else {
@@ -272,19 +259,13 @@ public class Repl {
                         continue; // Prompt user again
                     }
                     String observeGameID = parts[1];
-                    Integer observeNewGame = 0;
-                    try {
-                        observeNewGame = Integer.parseInt(observeGameID);
-                        // Process observeNewGame here
-                    } catch (NumberFormatException e) {
-
-                    }
+                    int observeNewGame = 0;
+                    observeNewGame = Integer.parseInt(observeGameID);
                     if (observeNewGame == 0) {
                         System.out.println("Invalid format. Correct format: observe <GAMEID>\n");
                         System.out.print("[LOGGED IN] >>> ");
                         continue;
                     }
-
                     var observerJoined = serverFacade.joinGame(authToken, "", observeGameID);
                     if (!observerJoined.toString().contains("Error")) {
                         System.out.println("Game Observer Joined\n");
@@ -293,7 +274,6 @@ public class Repl {
                         game = new GamePlay();
                         game.joinObserver(authToken, currPlayerColor, newgameID, userName);
                         gameUI();
-
                         System.out.print("[LOGGED IN] >>> ");
                         continue;
                     } else {
