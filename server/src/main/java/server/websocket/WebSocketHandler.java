@@ -55,7 +55,6 @@ public class WebSocketHandler {
         ChessGame chessGame = services.getChessGame(gameID);
         connections.add(gameID, session, playerName, chessGame, false);
         if (!Objects.equals(services.getPlayerColor(teamColor.toString(), gameID), playerName)) {
-            System.out.println("1");
             String zeroMessage = "Error: Invalid request";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             zero.setErrorMessage(zeroMessage);
@@ -64,7 +63,6 @@ public class WebSocketHandler {
             return;
         }
         if (playerName == null) {
-            System.out.println("2");
             String zeroMessage = "Error: Invalid authToken";
             var zero = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             zero.setErrorMessage(zeroMessage);
@@ -73,7 +71,6 @@ public class WebSocketHandler {
             return;
         }
         if (authToken == null) {
-            System.out.println("3");
             String oneMessage = "Error: Invalid authToken";
             var one = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             one.setErrorMessage(oneMessage);
@@ -82,7 +79,6 @@ public class WebSocketHandler {
             return;
         }
         if (gameID == 0) {
-            System.out.println("4");
             String twoMessage = "Error: Invalid gameID";
             var two = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             two.setErrorMessage(twoMessage);
@@ -145,7 +141,6 @@ public class WebSocketHandler {
 
     private void makeMove(UserGameCommand action, Session session) throws IOException, DataAccessException, InvalidMoveException {
         ChessGame.TeamColor playerColor = action.getPlayerColor();
-        System.out.println(playerColor);
         String playerName = action.getUser();
         String authToken = action.getAuthString();
         Integer gameID = action.getGameID();
