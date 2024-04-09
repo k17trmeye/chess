@@ -30,8 +30,7 @@ public class Repl {
 
         while (running) {
             String command = scanner.nextLine().trim();
-
-            String[] parts = command.split("\\s+"); // Split input by whitespace
+            String[] parts = command.split("\\s+");
             if (parts.length == 0) {
                 System.out.println("Invalid command, type help to get started.");
                 System.out.print("[LOGGED OUT] >>> ");
@@ -122,111 +121,67 @@ public class Repl {
             }
             switch (parts[0]) {
                 case "help":
-                    System.out.println("create <GAMENAME> - to create a game\nlist - to list games\n" +
-                            "join <GAMEID> <WHITE|BLACK> - to join game\nobserve <GAMEID> - to observe game\n" +
-                            "logout - to logout\nquit - to stop playing chess\nhelp - list possible commands\n");
+                    System.out.println("create <GAMENAME> - to create a game\nlist - to list games\njoin <GAMEID> <WHITE|BLACK> - to join game\nobserve <GAMEID> - to observe game\nlogout - to logout\nquit - to stop playing chess\nhelp - list possible commands\n");
                     break;
                 case "create":
-                    if (parts.length != 2) {
-                        System.out.println("Invalid format. Correct format: create <GAMENAME>");
-                        continue;
-                    }
+                    if (parts.length != 2) { System.out.println("Invalid format. Correct format: create <GAMENAME>"); continue; }
                     String gameName = parts[1];
                     var create = serverFacade.createGame(authToken, gameName);
                     if (!create.toString().contains("Error")) {
-                        int gameID = Integer.parseInt(create);
-                        System.out.println("Game created, gameID: " + gameID + "\n");
-                    } else {
-                        System.out.println("Error creating game");
-                    }
+                        int gameID = Integer.parseInt(create); System.out.println("Game created, gameID: " + gameID + "\n");
+                    } else { System.out.println("Error creating game"); }
                     break;
                 case "list":
                     String games = serverFacade.listGames(authToken).toString();
                     if (!games.contains("Error")) {
-                        Gson gson = new Gson();
-                        GameList gameList = gson.fromJson(games, GameList.class);
-                        if (gameList.games.length == 0) {
-                            System.out.println("No games created\n");
-                        } else {
-                            System.out.println("Games: ");
+                        Gson gson = new Gson(); GameList gameList = gson.fromJson(games, GameList.class);
+                        if (gameList.games.length == 0) { System.out.println("No games created\n");
+                        } else { System.out.println("Games: ");
                             for (String gameObject : games.substring(games.indexOf("[") + 1, games.indexOf("]"))
                                     .split("\\},\\{")) {
                                 gameObject = gameObject.replace("{", "").replace("}", "").replace("[", "").replace("]", "");
-                                int gameID = -1;
-                                String newGame = "", blackPlayer = null, whitePlayer = null;
-                                String[] pairs = gameObject.split(",");
+                                int gameID = -1; String newGame = "", blackPlayer = null, whitePlayer = null; String[] pairs = gameObject.split(",");
                                 for (String pair : pairs) {
-                                    String[] split = pair.split(":");
-                                    String key = split[0].trim(), value = split[1].trim();
+                                    String[] split = pair.split(":"); String key = split[0].trim(), value = split[1].trim();
                                     if (key.contains("gameID")) gameID = Integer.parseInt(value);
                                     else if (key.contains("gameName")) newGame = value.substring(1, value.length() - 1);
                                     else if (key.contains("blackUsername")) blackPlayer = value.substring(1, value.length() - 1);
                                     else if (key.contains("whiteUsername")) whitePlayer = value.substring(1, value.length() - 1);
-                                }
-                                System.out.println("\tGame ID: " + gameID + "\n" + "\tGame Name: " + newGame + "\n" + "\tBlack Player: " + (blackPlayer != null ? blackPlayer : "none") + "\n" + "\tWhite Player: " + (whitePlayer != null ? whitePlayer : "none") + "\n");
+                                } System.out.println("\tGame ID: " + gameID + "\n" + "\tGame Name: " + newGame + "\n" + "\tBlack Player: " + (blackPlayer != null ? blackPlayer : "none") + "\n" + "\tWhite Player: " + (whitePlayer != null ? whitePlayer : "none") + "\n");
                             }
                         }
-                    } else {
-                        System.out.println("No games available");
-                    }
+                    } else { System.out.println("No games available"); }
                     break;
                 case "join":
-                    if (parts.length != 3) {
-                        System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK>");
+                    if (parts.length != 3) { System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK>");
                         continue;
                     }
-                    String gameID = parts[1], playerColor = parts[2];
-                    Integer newGame = Integer.parseInt(gameID);
-                    newgameID = newGame;
-                    var joined = serverFacade.joinGame(authToken, playerColor, newGame.toString());
+                    String gameID = parts[1], playerColor = parts[2]; Integer newGame = Integer.parseInt(gameID);
+                    newgameID = newGame; var joined = serverFacade.joinGame(authToken, playerColor, newGame.toString());
                     if (!joined.toString().contains("Error")) {
                         if (playerColor.toLowerCase().contains("black") || playerColor.toLowerCase().contains("white")) {
-                            System.out.println("Game Joined");
-                            currPlayerColor = playerColor.toLowerCase();
-                            game = new GamePlay();
-                            game.joinGame(authToken, currPlayerColor, newgameID, userName);
-                            gameUI();
-                        } else {
-                            System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK>");
-                        }
-                    } else {
-                        System.out.println("Error joining game");
-                    }
+                            System.out.println("Game Joined"); currPlayerColor = playerColor.toLowerCase(); game = new GamePlay();
+                            game.joinGame(authToken, currPlayerColor, newgameID, userName); gameUI();
+                        } else { System.out.println("Invalid format. Correct format: join <GAMEID> <WHITE|BLACK>"); }
+                    } else { System.out.println("Error joining game"); }
                     break;
                 case "observe":
-                    if (parts.length != 2) {
-                        System.out.println("Invalid format. Correct format: observe <GAMEID>");
-                        continue;
-                    }
+                    if (parts.length != 2) { System.out.println("Invalid format. Correct format: observe <GAMEID>"); continue; }
                     String observeGameID = parts[1];
                     int observeNewGame = Integer.parseInt(observeGameID);
-                    if (observeNewGame == 0) {
-                        System.out.println("Invalid format. Correct format: observe <GAMEID>");
-                        continue;
-                    }
+                    if (observeNewGame == 0) { System.out.println("Invalid format. Correct format: observe <GAMEID>"); continue; }
                     var observerJoined = serverFacade.joinGame(authToken, "", observeGameID);
                     if (!observerJoined.toString().contains("Error")) {
-                        System.out.println("Game Observer Joined");
-                        currPlayerColor = null;
-                        newgameID = observeNewGame;
-                        game = new GamePlay();
-                        game.joinObserver(authToken, currPlayerColor, newgameID, userName);
+                        System.out.println("Game Observer Joined"); currPlayerColor = null; newgameID = observeNewGame; game = new GamePlay(); game.joinObserver(authToken, currPlayerColor, newgameID, userName);
                         gameUI();
-                    } else {
-                        System.out.println("Error joining observer");
-                    }
+                    } else { System.out.println("Error joining observer"); }
                     break;
                 case "logout":
-                    running = false;
-                    break;
+                    running = false; System.out.println(); return;
                 case "quit":
-                    System.out.println("Closing UI");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid command, type help to get started.");
-            }
-            System.out.print("[LOGGED IN] >>> ");
+                    System.out.println("Closing UI"); System.exit(0); return;
+                default: System.out.println("Invalid command, type help to get started.");
+            } System.out.print("[LOGGED IN] >>> ");
         }
     }
 
@@ -235,13 +190,10 @@ public class Repl {
     public void gameUI() throws IOException, Exception {
         boolean running = true;
         while (running) {
-            if (game.checkGame()) {
-                game.resignPlayer(authToken, newgameID, userName);
-                System.out.println("You lost, ending game\n");
-                running = false;
-                continue;
-            }
             String command = scanner.nextLine().trim();
+            if (game.gameOver()) {
+                return;
+            }
             String[] parts = command.split("\\s+");
             if (parts.length == 0) {
                 System.out.println("Invalid command, type help to get started.");

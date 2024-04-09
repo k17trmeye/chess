@@ -132,7 +132,7 @@ public class WebSocketHandler {
             connections.sendToUser(gameID, one, playerName, session);
             return;
         }
-        String message = String.format("%s has forfeited the match", playerName);
+        String message = String.format("%s has forfeited/lost the match", playerName);
         var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
         notification.setMessage(message);
         connections.broadcast(gameID, notification, authToken, true);

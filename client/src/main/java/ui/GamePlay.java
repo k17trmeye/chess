@@ -18,6 +18,9 @@ public class GamePlay extends Endpoint{
     Session session;
     String currColor;
     ChessGame recentGame;
+    String authToken;
+    Integer gameID;
+    String playerName;
 
     public GamePlay() throws URISyntaxException, DeploymentException, IOException {
         URI uri = new URI("ws://localhost:8080/connect");
@@ -32,7 +35,13 @@ public class GamePlay extends Endpoint{
                 switch (action.getServerMessageType()) {
                     case LOAD_GAME -> loadBoard(action);
                     case ERROR -> printError(action);
-                    case NOTIFICATION -> notifyPlayer(action);
+                    case NOTIFICATION -> {
+                        try {
+                            notifyPlayer(action);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
             }
         });
@@ -45,9 +54,16 @@ public class GamePlay extends Endpoint{
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void notifyPlayer(ServerMessage action) {
+    public void notifyPlayer(ServerMessage action) throws Exception {
         System.out.println(action.getMessage());
         System.out.println();
+        if (checkGame()) {
+            System.out.println("You lost, resigning game");
+            resignPlayer(authToken, gameID, playerName);
+            System.out.println("enter any key to leave game");
+            System.out.print("[GAMEOVER] >>> ");
+            return;
+        }
         System.out.print("[GAMEPLAY] >>> ");
     }
 
@@ -58,6 +74,9 @@ public class GamePlay extends Endpoint{
     }
 
     public void joinGame(String authToken, String playerColor, Integer gameID, String playerName) throws Exception {
+        this.authToken = authToken;
+        this.gameID = gameID;
+        this.playerName = playerName;
         try {
             this.currColor = playerColor;
             var action = new UserGameCommand(authToken);
@@ -74,6 +93,9 @@ public class GamePlay extends Endpoint{
     }
 
     public void leaveGame(String authToken, Integer gameID, String playerName) throws Exception {
+        this.authToken = null;
+        this.gameID = -1;
+        this.playerName = null;
         try {
             UserGameCommand action = new UserGameCommand(authToken);
             action.setUser(playerName);
@@ -87,7 +109,17 @@ public class GamePlay extends Endpoint{
         this.session.close();
     }
 
+    public boolean gameOver() {
+        if (authToken == null && gameID == -1 && playerName == null) {
+            return true;
+        }
+        return false;
+    }
+
     public void resignPlayer(String authToken, Integer gameID, String playerName) throws Exception {
+        this.authToken = null;
+        this.gameID = -1;
+        this.playerName = null;
         try {
             UserGameCommand action = new UserGameCommand(authToken);
             action.setUser(playerName);
